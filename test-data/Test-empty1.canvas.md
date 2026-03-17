@@ -1,6 +1,14 @@
-# Test-empty1.canvas
+# Notes
 
-[[Test-empty1.canvas]]
+# Content
 
-This index file enables Obsidian and its plugins to manage canvas files effectively. It ensures alias files for canvases appear in graphs and allows plugins compatible only with MD files to access these files.
+File: [Test-empty1.canvas](Test-empty1.canvas)
+
+![[Test-empty1.canvas]]
+
+> Feel free to write custom notes ABOVE this line, they will be preserved.
+> Please note: Deleting the original file will delete this file.
+
+<!--auto-generate-content-below-->
+# Transcript
 
