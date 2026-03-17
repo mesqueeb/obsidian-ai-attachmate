@@ -33,10 +33,7 @@ export abstract class BaseConverterService {
                 f.path.endsWith(this.config.sourceExtension) &&
                 (!filteredPaths || filteredPaths.has(f.path))
             );
-            const convertedFiles = allFiles.filter(f =>
-                f.path.startsWith(`${this.config.indexFolder}/`) &&
-                f.path.endsWith(this.config.targetExtension)
-            );
+            const convertedFiles = this.findConvertedFileCandidates(allFiles, sourceFiles);
 
             const [removedFiles, createdFiles, modifiedFiles] = await Promise.all([
                 this.removeOrphanedFiles(convertedFiles, sourceFiles),
@@ -91,6 +88,38 @@ export abstract class BaseConverterService {
         }
         if (remaining) parts.push(remaining);
         return parts.join('/');
+    }
+
+    private findConvertedFileCandidates(allFiles: File[], sourceFiles: File[]): File[] {
+        if (!this.isRelativeIndexFolder()) {
+            const normalized = this.config.indexFolder.replace(/^\/+/, '').replace(/\/+$/, '');
+            return allFiles.filter(f =>
+                f.path.startsWith(`${normalized}/`) &&
+                f.path.endsWith(this.config.targetExtension)
+            );
+        }
+
+        // Relative indexFolder: derive output dirs from current source files.
+        // When no sources remain (all deleted), fall back to scanning all files
+        // with the target extension — the content-marker check in deleteFile
+        // acts as the safety net against deleting user-created files.
+        const outputDirs = new Set(
+            sourceFiles.map(source => {
+                const outputPath = this.getConvertedFilePath(source.path);
+                return outputPath.includes('/')
+                    ? outputPath.split('/').slice(0, -1).join('/')
+                    : '';
+            })
+        );
+
+        return allFiles.filter(f => {
+            if (!f.path.endsWith(this.config.targetExtension)) return false;
+            if (sourceFiles.length === 0) return true;
+            const dir = f.path.includes('/')
+                ? f.path.split('/').slice(0, -1).join('/')
+                : '';
+            return outputDirs.has(dir);
+        });
     }
 
     protected async removeOrphanedFiles(convertedFiles: File[], sourceFiles: File[]): Promise<string[]> {
