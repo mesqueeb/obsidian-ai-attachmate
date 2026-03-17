@@ -12,7 +12,7 @@ File: [Test-single.canvas](Test-single.canvas)
 <!--auto-generate-content-below-->
 # Transcript
 
-# Medias
+# Media
 
 ![[Development/Pasted image 20250115171053.png|500]]
 

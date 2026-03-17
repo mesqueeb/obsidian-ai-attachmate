@@ -29,9 +29,9 @@ function buildContentBlocks(cards: string[], notes: string[], webPages: string[]
 	const cardsBlock = constructBlock("Cards", CARD_TEMPLATE, cards, "\n\n");
 	const notesBlock = constructBlock("Notes", NOTE_TEMPLATE, notes, "\n\n<br/>\n\n");
 	const webPagesBlock = constructBlock("Web Pages", WEBPAGE_TEMPLATE, webPages, "\n\n<br/>\n\n");
-	const mediasBlock = constructBlock("Medias", MEDIA_TEMPLATE, medias, "\n\n<br/>\n\n");
+	const mediaBlock = constructBlock("Media", MEDIA_TEMPLATE, medias, "\n\n<br/>\n\n");
 
-	return cardsBlock + notesBlock + webPagesBlock + mediasBlock;
+	return cardsBlock + notesBlock + webPagesBlock + mediaBlock;
 }
 
 export function convertCanvasToMd(content: string): string {

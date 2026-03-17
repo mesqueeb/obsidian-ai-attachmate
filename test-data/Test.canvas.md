@@ -36,7 +36,7 @@ ___
 
 ![Web Page](https://obsidian.md/)
 
-# Medias
+# Media
 
 ![[Development/Pasted image 20250115171053.png|500]]
 

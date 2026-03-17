@@ -14,7 +14,7 @@ describe('canvasToMd', () => {
 		expect(result).toContain('# Cards');
 		expect(result).toContain('# Notes');
 		expect(result).toContain('# Web Pages');
-		expect(result).toContain('# Medias');
+		expect(result).toContain('# Media');
 
 		// Does NOT contain template wrapper elements
 		expect(result).not.toContain('<!--auto-generate-content-below-->');
