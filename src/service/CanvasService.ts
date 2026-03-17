@@ -8,7 +8,8 @@ export class CanvasService extends BaseConverterService {
 		super(fileDao, {
 			indexFolder: config.indexFolder,
 			sourceExtension: '.canvas',
-			targetExtension: config.canvasPostfix
+			targetExtension: config.canvasPostfix,
+			fileFilter: config.fileFilter
 		});
 	}
 

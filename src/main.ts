@@ -52,10 +52,10 @@ export default class ObsidianIndexer extends Plugin {
 		);
 
 		// Create converters
-		const pdfConverter = new PdfConverterService(fileDao, settingsService.indexFolder, pdfParser);
-		const pngConverter = new PngConverterService(fileDao, settingsService.indexFolder, pngParser);
-		const jpgConverter = new JpgConverterService(fileDao, settingsService.indexFolder, jpgParser);
-		const jpegConverter = new JpegConverterService(fileDao, settingsService.indexFolder, jpegParser);
+		const pdfConverter = new PdfConverterService(fileDao, settingsService.indexFolder, pdfParser, settingsService.fileFilter);
+		const pngConverter = new PngConverterService(fileDao, settingsService.indexFolder, pngParser, settingsService.fileFilter);
+		const jpgConverter = new JpgConverterService(fileDao, settingsService.indexFolder, jpgParser, settingsService.fileFilter);
+		const jpegConverter = new JpegConverterService(fileDao, settingsService.indexFolder, jpegParser, settingsService.fileFilter);
 
 		// Initialize converters and other services
 		const runConversion = async () => {

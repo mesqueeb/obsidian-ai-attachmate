@@ -5,14 +5,16 @@ import { AttachmentParserService } from './AttachmentParserService';
 
 export class PngConverterService extends BaseConverterService {
     constructor(
-        fileDao: FileDao, 
+        fileDao: FileDao,
         indexFolder: string,
-        private parser: AttachmentParserService
+        private parser: AttachmentParserService,
+        fileFilter?: string
     ) {
         super(fileDao, {
             indexFolder,
             sourceExtension: '.png',
-            targetExtension: '.png.md'
+            targetExtension: '.png.md',
+            fileFilter
         });
     }
 

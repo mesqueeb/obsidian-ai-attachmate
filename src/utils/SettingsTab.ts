@@ -26,7 +26,9 @@ export class SettingsTab extends PluginSettingTab {
 			<li><strong>PDF files</strong> (.pdf): Creates markdown files with PDF viewer and extracts complete text content for searching (requires Google API key)</li>
 			<li><strong>Image files</strong> (.png, .jpg, .jpeg): Creates markdown files with embedded images and extracts all visible text for searching (requires Google API key)</li>
 		</ul>
-		All indexed files are stored in the specified index folder with their original extension plus ".md" (e.g., file.canvas → index/file.canvas.md). The plugin maintains synchronization, updating index files when originals change and removing them when originals are deleted.`;
+		All indexed files are stored in the specified index folder with their original extension plus ".md" (e.g., file.canvas → index/file.canvas.md). The plugin maintains synchronization, updating index files when originals change and removing them when originals are deleted.
+		<br><br>
+		<strong>Orphan cleanup with relative paths:</strong> When using a relative Index Folder (e.g. <code>../</code>), each source file's output lands in a different folder. The plugin scans all derived output folders rather than a single central folder, and uses content markers to identify generated files — so it will never delete user-created files that happen to share a name pattern.`;
 
 		new Setting(containerEl)
 			.setName('Run on start')
@@ -47,15 +49,32 @@ export class SettingsTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
+			.setName('File Filter')
+			.setDesc('Only process files that match this glob pattern')
+			.addText(text => text
+				.setPlaceholder('**/*.{canvas,pdf,png,jpg,jpeg}')
+				.setValue(this.settingsService.fileFilter)
+				.onChange(async (value) => {
+					await this.settingsService.updateFileFilter(value);
+				}));
+
+		new Setting(containerEl)
 			.setName('Index folder')
-			.setDesc('Folder to store converted files (must be at least 3 chars). If you change this, you need to manually rename or delete the old folder and re-run the conversion.')
+			.setDesc(createFragment(el => {
+				el.appendText('Folder to store converted files. Supports relative paths: ');
+				el.createEl('code', {text: './'});
+				el.appendText(' places index files alongside the originals, ');
+				el.createEl('code', {text: '../'});
+				el.appendText(' places them in the parent folder. Example: set Filter to ');
+				el.createEl('code', {text: '**/attachments/*.pdf'});
+				el.appendText(' and Index Folder to ');
+				el.createEl('code', {text: '../'});
+				el.appendText(' to index all PDFs in any attachments/ folder and place the .pdf.md output in its parent. If you change this setting, manually rename or delete the old folder and re-run the conversion.');
+			}))
 			.addText(text => text
 				.setPlaceholder('index')
 				.setValue(this.settingsService.indexFolder)
 				.onChange(async (value) => {
-					if (value.length < 3) {
-						value = 'index';
-					}
 					await this.settingsService.updateIndexFolder(value);
 				}));
 

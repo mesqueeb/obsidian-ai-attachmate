@@ -1,3 +1,4 @@
+import micromatch from 'micromatch';
 import { File, FileDao } from "../dao/FileDao";
 import { FatalProcessingError } from './AttachmentParserService';
 
@@ -5,6 +6,7 @@ export interface ConversionConfig {
     indexFolder: string;
     sourceExtension: string;
     targetExtension: string;
+    fileFilter?: string;
 }
 
 export abstract class BaseConverterService {
@@ -13,12 +15,24 @@ export abstract class BaseConverterService {
         protected config: ConversionConfig
     ) {}
 
+    private isRelativeIndexFolder(): boolean {
+        return this.config.indexFolder.startsWith('./') || this.config.indexFolder.startsWith('../');
+    }
+
     async convertFiles(): Promise<void> {
         try {
-            await this.fileDao.createFolder(this.config.indexFolder);
+            if (!this.isRelativeIndexFolder()) {
+                await this.fileDao.createFolder(this.config.indexFolder);
+            }
 
             const allFiles = await this.fileDao.getFiles();
-            const sourceFiles = allFiles.filter(f => f.path.endsWith(this.config.sourceExtension));
+            const filteredPaths = this.config.fileFilter
+                ? new Set(micromatch(allFiles.map(f => f.path), this.config.fileFilter))
+                : null;
+            const sourceFiles = allFiles.filter(f =>
+                f.path.endsWith(this.config.sourceExtension) &&
+                (!filteredPaths || filteredPaths.has(f.path))
+            );
             const convertedFiles = allFiles.filter(f =>
                 f.path.startsWith(`${this.config.indexFolder}/`) &&
                 f.path.endsWith(this.config.targetExtension)
@@ -46,8 +60,37 @@ export abstract class BaseConverterService {
         return file.name.slice(0, -this.config.targetExtension.length) + this.config.sourceExtension;
     }
 
-    protected getConvertedFilePath(sourceName: string): string {
-        return `${this.config.indexFolder}/${sourceName.slice(0, -this.config.sourceExtension.length)}${this.config.targetExtension}`;
+    protected getConvertedFilePath(sourcePath: string): string {
+        const sourceName = sourcePath.split('/').pop()!;
+        const sourceDir = sourcePath.includes('/')
+            ? sourcePath.split('/').slice(0, -1).join('/')
+            : '';
+        const outputFilename = sourceName.slice(0, -this.config.sourceExtension.length) + this.config.targetExtension;
+        const indexFolder = this.config.indexFolder;
+
+        if (this.isRelativeIndexFolder()) {
+            const resolvedDir = this.resolveRelativeDir(sourceDir, indexFolder);
+            return resolvedDir ? `${resolvedDir}/${outputFilename}` : outputFilename;
+        }
+
+        // Vault-root-relative: normalize leading/trailing slashes
+        const normalized = indexFolder.replace(/^\/+/, '').replace(/\/+$/, '');
+        return normalized ? `${normalized}/${outputFilename}` : outputFilename;
+    }
+
+    private resolveRelativeDir(sourceDir: string, indexFolder: string): string {
+        const parts = sourceDir ? sourceDir.split('/') : [];
+        let remaining = indexFolder;
+
+        while (remaining.startsWith('../')) {
+            if (parts.length > 0) parts.pop();
+            remaining = remaining.slice(3);
+        }
+        if (remaining.startsWith('./')) {
+            remaining = remaining.slice(2);
+        }
+        if (remaining) parts.push(remaining);
+        return parts.join('/');
     }
 
     protected async removeOrphanedFiles(convertedFiles: File[], sourceFiles: File[]): Promise<string[]> {
@@ -77,7 +120,7 @@ export abstract class BaseConverterService {
         const processedNames = [];
         for (const source of sourceFiles.filter(source => !convertedNames.has(source.name))) {
             try {
-                const targetPath = this.getConvertedFilePath(source.name);
+                const targetPath = this.getConvertedFilePath(source.path);
                 await this.convertAndSave(source, targetPath);
                 processedNames.push(source.name);
             } catch (error) {
@@ -106,7 +149,7 @@ export abstract class BaseConverterService {
             const convertedFile = convertedFileMap.get(source.name);
             if (convertedFile && source.modifiedTime >= convertedFile.modifiedTime) {
                 try {
-                    const targetPath = this.getConvertedFilePath(source.name);
+                    const targetPath = this.getConvertedFilePath(source.path);
                     await this.convertAndSave(source, targetPath);
                     modifiedFileNames.push(source.name);
                 } catch (error) {

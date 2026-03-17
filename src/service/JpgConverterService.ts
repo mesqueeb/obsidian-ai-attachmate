@@ -5,14 +5,16 @@ import { AttachmentParserService } from './AttachmentParserService';
 
 export class JpgConverterService extends BaseConverterService {
     constructor(
-        fileDao: FileDao, 
+        fileDao: FileDao,
         indexFolder: string,
-        private parser: AttachmentParserService
+        private parser: AttachmentParserService,
+        fileFilter?: string
     ) {
         super(fileDao, {
             indexFolder,
             sourceExtension: '.jpg',
-            targetExtension: '.jpg.md'
+            targetExtension: '.jpg.md',
+            fileFilter
         });
     }
 
