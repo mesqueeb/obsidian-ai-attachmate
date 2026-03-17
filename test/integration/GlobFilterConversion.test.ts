@@ -3,6 +3,7 @@ import {CanvasService} from '../../src/service/CanvasService';
 import {FileDaoImpl} from '../../src/dao/FileDaoImpl';
 import {InMemoryFileAdapter} from '../dao/InMemoryFileAdapter';
 import {readTestFile} from '../utils/testFileUtils';
+import {DEFAULT_FILE_FILTER} from '../../src/service/SettingsService';
 
 const CANVAS_CONTENT = readTestFile('Test.canvas');
 
@@ -49,6 +50,28 @@ describe('Integration Test: Glob Filter', () => {
 		// canvas matches filter AND is the converter's source extension → processed
 		expect(await fileAdapter.read('index/Doc.canvas.md')).toBeDefined();
 		// .png does not match filter → not processed (CanvasService wouldn't handle it anyway, but it's excluded at the gate)
+	});
+
+	it('DEFAULT_FILE_FILTER matches canvas files at any depth in the vault', async () => {
+		await fileDao.createOrUpdateFile('root.canvas', CANVAS_CONTENT);
+		await fileDao.createOrUpdateFile('deep/nested/file.canvas', CANVAS_CONTENT);
+		await fileDao.createOrUpdateFile('attachments/doc.canvas', CANVAS_CONTENT);
+		// Non-matching extension — should not be processed by CanvasService
+		await fileDao.createOrUpdateFile('deep/image.png', 'binary');
+
+		const service = new CanvasService(fileDao, {
+			canvasPostfix: '.canvas.md',
+			runOnStart: false,
+			indexFolder: 'index',
+			fileFilter: DEFAULT_FILE_FILTER,
+		});
+		await service.convertFiles();
+
+		expect(await fileAdapter.read('index/root.canvas.md')).toBeDefined();
+		expect(await fileAdapter.read('index/file.canvas.md')).toBeDefined();
+		expect(await fileAdapter.read('index/doc.canvas.md')).toBeDefined();
+		// .png passes the filter but CanvasService ignores it — no .png.md created
+		await expect(fileAdapter.read('index/image.canvas.md')).rejects.toThrow();
 	});
 
 	it('no fileFilter set — all canvas files anywhere in vault are processed (no regression)', async () => {
