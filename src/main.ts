@@ -33,11 +33,9 @@ export default class ObsidianIndexer extends Plugin {
 			if (existing.length > 0) {
 				this.app.workspace.revealLeaf(existing[0]);
 			} else {
-				const leaf = this.app.workspace.getRightLeaf(false);
-				if (leaf) {
-					await leaf.setViewState({ type: STATUS_VIEW_TYPE, active: true });
-					this.app.workspace.revealLeaf(leaf);
-				}
+				const leaf = this.app.workspace.getLeaf('tab');
+				await leaf.setViewState({ type: STATUS_VIEW_TYPE, active: true });
+				this.app.workspace.revealLeaf(leaf);
 			}
 		});
 

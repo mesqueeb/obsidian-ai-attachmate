@@ -24,7 +24,16 @@ describe('renderStatusContent', () => {
         expect(html).toContain('Done');
     });
 
-    it('renders sections in order: Processing, Pending, Error, Done', () => {
+    it('shows count in section heading', () => {
+        const files: FileStatus[] = [
+            { path: 'a.pdf', status: 'done' },
+            { path: 'b.pdf', status: 'done' },
+        ];
+        const html = renderStatusContent(files);
+        expect(html).toContain('Done (2)');
+    });
+
+    it('renders sections in order: Error, Processing, Pending, Done', () => {
         const files: FileStatus[] = [
             { path: 'a.pdf', status: 'done' },
             { path: 'b.pdf', status: 'error', errorMessage: 'fail' },
@@ -32,21 +41,62 @@ describe('renderStatusContent', () => {
             { path: 'd.pdf', status: 'processing' },
         ];
         const html = renderStatusContent(files);
+        const errorIdx = html.indexOf('Error');
         const processingIdx = html.indexOf('Processing');
         const pendingIdx = html.indexOf('Pending');
-        const errorIdx = html.indexOf('Error');
         const doneIdx = html.indexOf('Done');
+        expect(errorIdx).toBeLessThan(processingIdx);
         expect(processingIdx).toBeLessThan(pendingIdx);
-        expect(pendingIdx).toBeLessThan(errorIdx);
-        expect(errorIdx).toBeLessThan(doneIdx);
+        expect(pendingIdx).toBeLessThan(doneIdx);
     });
 
-    it('shows Processing section with processing files', () => {
+    it('splits path into folder and filename columns', () => {
         const files: FileStatus[] = [
-            { path: 'folder/a.pdf', status: 'processing' },
+            { path: 'Research/attachments/paper.pdf', status: 'done' },
         ];
         const html = renderStatusContent(files);
-        expect(html).toContain('Processing');
-        expect(html).toContain('folder/a.pdf');
+        expect(html).toContain('Research/attachments');
+        expect(html).toContain('paper.pdf');
+    });
+
+    it('groups files from same folder with rowspan', () => {
+        const files: FileStatus[] = [
+            { path: 'folder/a.pdf', status: 'done' },
+            { path: 'folder/b.pdf', status: 'done' },
+            { path: 'folder/c.pdf', status: 'done' },
+        ];
+        const html = renderStatusContent(files);
+        expect(html).toContain('rowspan="3"');
+        // folder cell appears only once
+        const folderCount = (html.match(/indexer-folder-sticky/g) || []).length;
+        expect(folderCount).toBe(1);
+    });
+
+    it('uses separate folder cells for files in different folders', () => {
+        const files: FileStatus[] = [
+            { path: 'folder-a/x.pdf', status: 'done' },
+            { path: 'folder-b/y.pdf', status: 'done' },
+        ];
+        const html = renderStatusContent(files);
+        expect(html).toContain('folder-a');
+        expect(html).toContain('folder-b');
+        const folderCount = (html.match(/indexer-folder-sticky/g) || []).length;
+        expect(folderCount).toBe(2);
+    });
+
+    it('shows spinner element when files are processing', () => {
+        const files: FileStatus[] = [
+            { path: 'a.pdf', status: 'processing' },
+        ];
+        const html = renderStatusContent(files);
+        expect(html).toContain('<span class="indexer-spinner">');
+    });
+
+    it('does not show spinner element when no files are processing', () => {
+        const files: FileStatus[] = [
+            { path: 'a.pdf', status: 'done' },
+        ];
+        const html = renderStatusContent(files);
+        expect(html).not.toContain('<span class="indexer-spinner">');
     });
 });

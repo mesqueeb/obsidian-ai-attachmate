@@ -164,11 +164,11 @@ export abstract class BaseConverterService {
                 this.tracker?.setStatus(source.path, 'done');
                 processedNames.push(source.name);
             } catch (error) {
+                const message = error instanceof Error ? error.message : String(error);
+                this.tracker?.setStatus(source.path, 'error', message);
                 if (error instanceof FatalProcessingError) {
                     throw error;
                 }
-                const message = error instanceof Error ? error.message : String(error);
-                this.tracker?.setStatus(source.path, 'error', message);
                 console.error(`Error processing file ${source.name}:`, error);
             }
         }
@@ -197,11 +197,11 @@ export abstract class BaseConverterService {
                     this.tracker?.setStatus(source.path, 'done');
                     modifiedFileNames.push(source.name);
                 } catch (error) {
+                    const message = error instanceof Error ? error.message : String(error);
+                    this.tracker?.setStatus(source.path, 'error', message);
                     if (error instanceof FatalProcessingError) {
                         throw error;
                     }
-                    const message = error instanceof Error ? error.message : String(error);
-                    this.tracker?.setStatus(source.path, 'error', message);
                     console.error(`Error processing file ${source.name}:`, error);
                 }
             } else {
