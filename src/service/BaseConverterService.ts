@@ -53,13 +53,11 @@ export abstract class BaseConverterService {
 			this.tracker?.initFiles(sourceFiles.map((f) => f.path))
 			const convertedFiles = this.findConvertedFileCandidates(allFiles, sourceFiles)
 
-			const [removedFiles, createdFiles, modifiedFiles] = await Promise.all([
+			await Promise.all([
 				this.removeOrphanedFiles(convertedFiles, sourceFiles),
 				this.createConvertedFiles(sourceFiles, convertedFiles),
 				this.modifyConvertedFiles(sourceFiles, convertedFiles),
 			])
-
-			this.logConversionResults(removedFiles, createdFiles, modifiedFiles, sourceFiles.length)
 		} catch (error) {
 			console.error('Error during conversion:', error)
 
@@ -237,32 +235,5 @@ export abstract class BaseConverterService {
 		}
 
 		await this.fileDao.createOrUpdateFile(targetPath, finalContent)
-	}
-
-	protected logConversionResults(
-		removedFiles: string[],
-		createdFiles: {
-			count: number
-			files: string[]
-		},
-		modifiedFiles: { count: number; files: string[] },
-		totalFiles: number,
-	): void {
-		console.log(
-			`File conversion completed successfully\n` +
-				`Total files processed ${createdFiles.count + modifiedFiles.count + removedFiles.length}/${totalFiles}\n` +
-				`Created files ${createdFiles.count}\n` +
-				(createdFiles.count > 0
-					? `  ${createdFiles.files.map((f) => `- ${f.replace(this.config.sourceExtension, '')}`).join('\n  ')}\n`
-					: '') +
-				`Modified files ${modifiedFiles.count}\n` +
-				(modifiedFiles.count > 0
-					? `  ${modifiedFiles.files.map((f) => `- ${f.replace(this.config.sourceExtension, '')}`).join('\n  ')}\n`
-					: '') +
-				`Deleted files ${removedFiles.length}\n` +
-				(removedFiles.length > 0
-					? `  ${removedFiles.map((f) => `- ${f.replace(`${this.config.transcriptsFolder}/`, '').replace(this.config.targetExtension, '')}`).join('\n  ')}\n`
-					: ''),
-		)
 	}
 }

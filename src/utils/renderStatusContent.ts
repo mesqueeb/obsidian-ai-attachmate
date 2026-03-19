@@ -8,6 +8,14 @@ const SECTION_LABELS = {
 	done: 'Done',
 }
 
+function escapeHtml(str: string): string {
+	return str
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+}
+
 function splitPath(filePath: string): { folder: string; name: string } {
 	const lastSlash = filePath.lastIndexOf('/')
 	if (lastSlash === -1) return { folder: '', name: filePath }
@@ -59,17 +67,17 @@ export function renderStatusContent(files: FileStatus[]): string {
 			folderFiles.forEach((file, i) => {
 				const { name } = splitPath(file.path)
 				const errorMsg = file.errorMessage
-					? `<span class="attachmate-error-msg">${file.errorMessage}</span>`
+					? `<span class="attachmate-error-msg">${escapeHtml(file.errorMessage)}</span>`
 					: ''
 				if (i === 0) {
 					rows += `<tr>
                         <td class="attachmate-folder" rowspan="${folderFiles.length}">
-                            <div class="attachmate-folder-sticky">${folder}</div>
+                            <div class="attachmate-folder-sticky">${escapeHtml(folder)}</div>
                         </td>
-                        <td class="attachmate-filename">${name}${errorMsg}</td>
+                        <td class="attachmate-filename">${escapeHtml(name)}${errorMsg}</td>
                     </tr>`
 				} else {
-					rows += `<tr><td class="attachmate-filename">${name}${errorMsg}</td></tr>`
+					rows += `<tr><td class="attachmate-filename">${escapeHtml(name)}${errorMsg}</td></tr>`
 				}
 			})
 		}

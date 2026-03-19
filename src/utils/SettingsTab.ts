@@ -103,7 +103,7 @@ export class SettingsTab extends PluginSettingTab {
 			})
 
 		new Setting(containerEl)
-			.setName('Google API Key')
+			.setName('Google API key')
 			.setDesc(
 				createFragment((el) => {
 					el.appendText(
@@ -128,7 +128,7 @@ export class SettingsTab extends PluginSettingTab {
 			})
 
 		new Setting(containerEl)
-			.setName('Gemini Prompt')
+			.setName('Gemini prompt')
 			.setDesc(
 				'The instruction sent to Gemini for all PDF and image attachments. Changing this takes effect on the next transcription run.',
 			)
@@ -149,7 +149,7 @@ export class SettingsTab extends PluginSettingTab {
 			)
 
 		new Setting(containerEl)
-			.setName('Run on start (Mobile)')
+			.setName('Run on start (mobile)')
 			.setDesc(
 				'Same as above, but for mobile. Disabled by default — enable only after the initial transcription is done, as large vaults can take a while and may cause Obsidian to restart on mobile.',
 			)

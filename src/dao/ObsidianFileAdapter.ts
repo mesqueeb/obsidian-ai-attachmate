@@ -1,4 +1,4 @@
-import { App, TFile } from 'obsidian'
+import { App, TFile, normalizePath } from 'obsidian'
 import { AdapterFile, FileAdapter } from './FileAdapter'
 
 export class ObsidianFileAdapter implements FileAdapter {
@@ -15,13 +15,14 @@ export class ObsidianFileAdapter implements FileAdapter {
 	}
 
 	async createFolder(folderPath: string): Promise<void> {
-		if (!this.app.vault.getAbstractFileByPath(folderPath)) {
-			await this.app.vault.createFolder(folderPath)
+		const normalized = normalizePath(folderPath)
+		if (!this.app.vault.getAbstractFileByPath(normalized)) {
+			await this.app.vault.createFolder(normalized)
 		}
 	}
 
 	async read(filePath: string): Promise<string> {
-		const file = this.app.vault.getAbstractFileByPath(filePath)
+		const file = this.app.vault.getAbstractFileByPath(normalizePath(filePath))
 		if (!file || !(file instanceof TFile)) {
 			throw new Error(`File not found: ${filePath}`)
 		}
@@ -29,11 +30,11 @@ export class ObsidianFileAdapter implements FileAdapter {
 	}
 
 	async create(filePath: string, content: string): Promise<void> {
-		await this.app.vault.create(filePath, content)
+		await this.app.vault.create(normalizePath(filePath), content)
 	}
 
 	async modify(filePath: string, content: string): Promise<void> {
-		const file = this.app.vault.getAbstractFileByPath(filePath)
+		const file = this.app.vault.getAbstractFileByPath(normalizePath(filePath))
 		if (!file || !(file instanceof TFile)) {
 			throw new Error(`File not found: ${filePath}`)
 		}
@@ -41,7 +42,7 @@ export class ObsidianFileAdapter implements FileAdapter {
 	}
 
 	async delete(filePath: string): Promise<void> {
-		const file = this.app.vault.getAbstractFileByPath(filePath)
+		const file = this.app.vault.getAbstractFileByPath(normalizePath(filePath))
 		if (!file) {
 			throw new Error(`File not found: ${filePath}`)
 		}
@@ -49,7 +50,7 @@ export class ObsidianFileAdapter implements FileAdapter {
 	}
 
 	async readBinary(filePath: string): Promise<ArrayBuffer> {
-		const file = this.app.vault.getAbstractFileByPath(filePath)
+		const file = this.app.vault.getAbstractFileByPath(normalizePath(filePath))
 		if (!file || !(file instanceof TFile)) {
 			throw new Error(`File not found: ${filePath}`)
 		}

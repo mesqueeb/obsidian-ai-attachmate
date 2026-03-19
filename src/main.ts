@@ -157,8 +157,4 @@ export default class ObsidianAiAttachmate extends Plugin {
 			})
 		}
 	}
-
-	override onunload(): void {
-		console.log('AI Attachmate plugin unloaded.')
-	}
 }

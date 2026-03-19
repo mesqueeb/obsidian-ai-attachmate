@@ -37,8 +37,12 @@ export class StatusView extends ItemView {
 	private render(): void {
 		const files = this.tracker.getAll()
 		const container = this.containerEl.children[1] as HTMLElement
+		container.empty()
 		if (files.length === 0) {
-			container.innerHTML = '<p>No files tracked yet. Run the converter to see status.</p>'
+			container.createEl('p', {
+				cls: 'attachmate-empty',
+				text: 'No files tracked yet. Run the converter to see status.',
+			})
 		} else {
 			container.innerHTML = renderStatusContent(files)
 		}

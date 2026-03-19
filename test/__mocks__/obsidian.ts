@@ -16,6 +16,8 @@ export class App {
 	}
 }
 
+export const normalizePath = (path: string): string => path
+
 export class Plugin {
 	manifest = {
 		dir: '/test',
