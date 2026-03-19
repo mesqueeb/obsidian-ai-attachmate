@@ -8,14 +8,6 @@ const SECTION_LABELS = {
 	done: 'Done',
 }
 
-function escapeHtml(str: string): string {
-	return str
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-}
-
 function splitPath(filePath: string): { folder: string; name: string } {
 	const lastSlash = filePath.lastIndexOf('/')
 	if (lastSlash === -1) return { folder: '', name: filePath }
@@ -40,9 +32,19 @@ function groupByFolder(files: FileStatus[]): { folder: string; files: FileStatus
 	return order.map((folder) => ({ folder, files: map.get(folder) ?? [] }))
 }
 
-export function renderStatusContent(files: FileStatus[]): string {
+/**
+ * Renders the status content into the given container using Obsidian DOM APIs.
+ *
+ * Per the {@link https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines#Security Obsidian plugin guidelines},
+ * `innerHTML` must never be used — DOM methods like `createEl()` and `createDiv()` are required instead.
+ */
+export function renderStatusContent(container: HTMLElement, files: FileStatus[]): void {
 	if (files.length === 0) {
-		return '<p class="attachmate-empty">No files tracked yet. Run the converter to see status.</p>'
+		container.createEl('p', {
+			cls: 'attachmate-empty',
+			text: 'No files tracked yet. Run the converter to see status.',
+		})
+		return
 	}
 
 	const grouped = new Map<ConversionStatus, FileStatus[]>()
@@ -51,39 +53,39 @@ export function renderStatusContent(files: FileStatus[]): string {
 
 	const isProcessing = (grouped.get('processing')?.length ?? 0) > 0
 
-	let rows = ''
+	const wrapper = container.createDiv({ cls: 'attachmate-scroll-wrapper' })
+	const table = wrapper.createEl('table', { cls: 'attachmate-status-table' })
+	const tbody = table.createEl('tbody')
+
 	for (const status of SECTION_ORDER) {
 		const group = grouped.get(status) ?? []
 		if (group.length === 0) continue
 
-		const spinner =
-			status === 'processing' && isProcessing ? '<span class="attachmate-spinner"></span>' : ''
-
-		rows += `<tr class="attachmate-section-header">
-            <td colspan="2">${SECTION_LABELS[status]} (${group.length})${spinner}</td>
-        </tr>`
+		const headerRow = tbody.createEl('tr', { cls: 'attachmate-section-header' })
+		const headerCell = headerRow.createEl('td')
+		headerCell.setAttr('colspan', '2')
+		headerCell.appendText(`${SECTION_LABELS[status]} (${group.length})`)
+		if (status === 'processing' && isProcessing) {
+			headerCell.createEl('span', { cls: 'attachmate-spinner' })
+		}
 
 		for (const { folder, files: folderFiles } of groupByFolder(group)) {
 			folderFiles.forEach((file, i) => {
 				const { name } = splitPath(file.path)
-				const errorMsg = file.errorMessage
-					? `<span class="attachmate-error-msg">${escapeHtml(file.errorMessage)}</span>`
-					: ''
+				const row = tbody.createEl('tr')
+
 				if (i === 0) {
-					rows += `<tr>
-                        <td class="attachmate-folder" rowspan="${folderFiles.length}">
-                            <div class="attachmate-folder-sticky">${escapeHtml(folder)}</div>
-                        </td>
-                        <td class="attachmate-filename">${escapeHtml(name)}${errorMsg}</td>
-                    </tr>`
-				} else {
-					rows += `<tr><td class="attachmate-filename">${escapeHtml(name)}${errorMsg}</td></tr>`
+					const folderCell = row.createEl('td', { cls: 'attachmate-folder' })
+					folderCell.setAttr('rowspan', String(folderFiles.length))
+					folderCell.createDiv({ cls: 'attachmate-folder-sticky', text: folder })
+				}
+
+				const nameCell = row.createEl('td', { cls: 'attachmate-filename' })
+				nameCell.appendText(name)
+				if (file.errorMessage) {
+					nameCell.createEl('span', { cls: 'attachmate-error-msg', text: file.errorMessage })
 				}
 			})
 		}
 	}
-
-	return `<div class="attachmate-scroll-wrapper">
-        <table class="attachmate-status-table"><tbody>${rows}</tbody></table>
-    </div>`
 }
