@@ -46,9 +46,14 @@ export default class ObsidianIndexer extends Plugin {
 		
 		// Create parser instances with specific prompts for each type
 		const pdfParser = new GeminiAttachmentParserService(
-			settingsService, 
+			settingsService,
 			'application/pdf',
-			"Extract and summarize the content of this PDF. Provide the complete text and a brief summary. If the PDF contains images, include descriptions of them and the full text they contain."
+			`Transcribe the complete content of this PDF into well-structured markdown.
+- Use ## for top-level sections and ### for subsections, using the exact section titles from the document (e.g. "## 1. Introduction", "## Conclusion")
+- Never use bold text (**like this**) as a substitute for headings
+- Preserve all body text faithfully and in full
+- Render tables using markdown table syntax, always with a blank line before and after the table
+- For figures and images, write a brief italicised description on its own line`
 		);
 
 		const pngParser = new GeminiAttachmentParserService(
