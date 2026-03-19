@@ -69,7 +69,9 @@ This attachment cannot be transcribed due to Gemini API limitations.`
 		// Check API key first
 		const apiKey = this.config.getApiKey()
 		if (!apiKey) {
-			throw new FatalProcessingError('No Google API key configured. Please add your Gemini API key in the plugin settings.')
+			throw new FatalProcessingError(
+				'No Google API key configured. Please add your Gemini API key in the plugin settings.',
+			)
 		}
 
 		// Check file size first

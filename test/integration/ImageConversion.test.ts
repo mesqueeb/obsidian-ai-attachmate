@@ -28,7 +28,8 @@ describe('Integration Test: Image Conversion', () => {
 		const imageParser = new GeminiAttachmentParserService(
 			{ getApiKey: (): string => apiKey },
 			'image/png',
-			(): string => 'Parse text from the image. Return full text and also give me description of the image',
+			(): string =>
+				'Parse text from the image. Return full text and also give me description of the image',
 		)
 		pngConverter = new PngConverterService(fileDao, 'transcripts', imageParser)
 
@@ -36,7 +37,8 @@ describe('Integration Test: Image Conversion', () => {
 		fileAdapter.clear()
 
 		// Create partially applied function with adapter instead of fileDao
-		createImageFile = (filename: string): Promise<void> => createTestImageFile(fileAdapter, filename)
+		createImageFile = (filename: string): Promise<void> =>
+			createTestImageFile(fileAdapter, filename)
 	})
 
 	function verifyMarkdownStructure(content: string, imageName: string): void {

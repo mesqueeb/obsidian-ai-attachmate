@@ -1,6 +1,11 @@
 import { Plugin } from 'obsidian'
 import { CanvasServiceConfig } from '../service/CanvasServiceConfig'
-import { DEFAULT_FILE_FILTER, DEFAULT_TRANSCRIPTS_FOLDER, DEFAULT_PROMPT, DEFAULT_TEMPLATE } from '../utils/constants'
+import {
+	DEFAULT_FILE_FILTER,
+	DEFAULT_PROMPT,
+	DEFAULT_TEMPLATE,
+	DEFAULT_TRANSCRIPTS_FOLDER,
+} from '../utils/constants'
 import { AttachmentParserConfig } from './AttachmentParserService'
 
 export type Settings = {

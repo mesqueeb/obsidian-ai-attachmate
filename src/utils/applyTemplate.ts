@@ -6,7 +6,9 @@ export function applyTemplate(
 	transcript: string,
 	options?: { canvas?: boolean },
 ): string {
-	let header = template.replace(/\{\{filename\}\}/g, vars.filename).replace(/\{\{path\}\}/g, vars.path)
+	let header = template
+		.replace(/\{\{filename\}\}/g, vars.filename)
+		.replace(/\{\{path\}\}/g, vars.path)
 
 	if (options?.canvas) {
 		header = header.replace(/#height=\d+/g, '')

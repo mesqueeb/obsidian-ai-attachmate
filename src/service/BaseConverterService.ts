@@ -24,7 +24,10 @@ export abstract class BaseConverterService {
 	}
 
 	private isRelativeTranscriptsFolder(): boolean {
-		return this.config.transcriptsFolder.startsWith('./') || this.config.transcriptsFolder.startsWith('../')
+		return (
+			this.config.transcriptsFolder.startsWith('./') ||
+			this.config.transcriptsFolder.startsWith('../')
+		)
 	}
 
 	async convertFiles(): Promise<void> {

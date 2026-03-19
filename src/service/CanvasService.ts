@@ -1,6 +1,6 @@
 import { File, FileDao } from '../dao/FileDao'
-import { convertCanvasToMd } from '../utils/canvasToMd'
 import { applyTemplate } from '../utils/applyTemplate'
+import { convertCanvasToMd } from '../utils/canvasToMd'
 import { DEFAULT_TEMPLATE } from '../utils/constants'
 import { BaseConverterService } from './BaseConverterService'
 import { CanvasServiceConfig } from './CanvasServiceConfig'
@@ -8,7 +8,11 @@ import { CanvasServiceConfig } from './CanvasServiceConfig'
 export class CanvasService extends BaseConverterService {
 	private getTemplate: () => string
 
-	constructor(fileDao: FileDao, config: CanvasServiceConfig, getTemplate: () => string = () => DEFAULT_TEMPLATE) {
+	constructor(
+		fileDao: FileDao,
+		config: CanvasServiceConfig,
+		getTemplate: () => string = () => DEFAULT_TEMPLATE,
+	) {
 		super(fileDao, {
 			transcriptsFolder: config.transcriptsFolder,
 			sourceExtension: '.canvas',

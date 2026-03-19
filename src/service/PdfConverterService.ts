@@ -26,7 +26,11 @@ export class PdfConverterService extends BaseConverterService {
 			() => source.getBinaryContent(),
 			source.path,
 		)
-		return applyTemplate(this.getTemplate(), { filename: source.name, path: source.path }, transcript)
+		return applyTemplate(
+			this.getTemplate(),
+			{ filename: source.name, path: source.path },
+			transcript,
+		)
 	}
 
 	override async convertFiles(): Promise<void> {

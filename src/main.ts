@@ -51,16 +51,44 @@ export default class ObsidianAiAttachmate extends Plugin {
 		// Create parser instances with specific prompts for each type
 		const getPrompt = (): string => settingsService.prompt
 
-		const pdfParser = new GeminiAttachmentParserService(settingsService, 'application/pdf', getPrompt)
+		const pdfParser = new GeminiAttachmentParserService(
+			settingsService,
+			'application/pdf',
+			getPrompt,
+		)
 		const pngParser = new GeminiAttachmentParserService(settingsService, 'image/png', getPrompt)
 		const jpgParser = new GeminiAttachmentParserService(settingsService, 'image/jpeg', getPrompt)
 		const jpegParser = new GeminiAttachmentParserService(settingsService, 'image/jpeg', getPrompt)
 
 		// Create converters
-		const pdfConverter = new PdfConverterService(fileDao, settingsService.transcriptsFolder, pdfParser, settingsService.fileFilter, getTemplate)
-		const pngConverter = new PngConverterService(fileDao, settingsService.transcriptsFolder, pngParser, settingsService.fileFilter, getTemplate)
-		const jpgConverter = new JpgConverterService(fileDao, settingsService.transcriptsFolder, jpgParser, settingsService.fileFilter, getTemplate)
-		const jpegConverter = new JpegConverterService(fileDao, settingsService.transcriptsFolder, jpegParser, settingsService.fileFilter, getTemplate)
+		const pdfConverter = new PdfConverterService(
+			fileDao,
+			settingsService.transcriptsFolder,
+			pdfParser,
+			settingsService.fileFilter,
+			getTemplate,
+		)
+		const pngConverter = new PngConverterService(
+			fileDao,
+			settingsService.transcriptsFolder,
+			pngParser,
+			settingsService.fileFilter,
+			getTemplate,
+		)
+		const jpgConverter = new JpgConverterService(
+			fileDao,
+			settingsService.transcriptsFolder,
+			jpgParser,
+			settingsService.fileFilter,
+			getTemplate,
+		)
+		const jpegConverter = new JpegConverterService(
+			fileDao,
+			settingsService.transcriptsFolder,
+			jpegParser,
+			settingsService.fileFilter,
+			getTemplate,
+		)
 
 		// Wire status tracker into all converters
 		canvasService.setStatusTracker(statusTracker)
@@ -90,7 +118,11 @@ export default class ObsidianAiAttachmate extends Plugin {
 			} catch (error) {
 				if (error instanceof FatalProcessingError) {
 					// Show error notification
-					new Notice(error.message.includes('No Google API key') ? error.message : 'Transcription stopped due to Gemini API errors. Please try again later.')
+					new Notice(
+						error.message.includes('No Google API key')
+							? error.message
+							: 'Transcription stopped due to Gemini API errors. Please try again later.',
+					)
 					console.error('Transcription stopped:', error.message)
 				} else {
 					// Handle other errors

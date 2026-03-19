@@ -1,12 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import type { Plugin } from 'obsidian'
-import { DEFAULT_FILE_FILTER, DEFAULT_PROMPT, DEFAULT_TEMPLATE } from '../src/utils/constants'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { SettingsServiceImpl } from '../src/service/SettingsService'
+import { DEFAULT_FILE_FILTER, DEFAULT_PROMPT, DEFAULT_TEMPLATE } from '../src/utils/constants'
 
 function makePlugin(): Plugin {
 	return {
 		loadData: async (): Promise<unknown> => ({}),
-		saveData: async (): Promise<void> => { /* no-op */ },
+		saveData: async (): Promise<void> => {
+			/* no-op */
+		},
 	} as unknown as Plugin
 }
 
