@@ -1,57 +1,57 @@
 export interface Plugin {
 	manifest: {
-		dir: string;
-	};
-	app: any;
+		dir: string
+	}
+	app: any
 
-	onload(): void;
+	onload(): void
 
-	addRibbonIcon(icon: string, title: string, callback: (evt: MouseEvent) => void): void;
+	addRibbonIcon(icon: string, title: string, callback: (evt: MouseEvent) => void): void
 
-	addStatusBarItem(): void;
+	addStatusBarItem(): void
 
-	addCommand(command: any): void;
+	addCommand(command: any): void
 
-	removeCommand(commandId: string): void;
+	removeCommand(commandId: string): void
 
-	addSettingTab(tab: any): void;
+	addSettingTab(tab: any): void
 
-	registerView(type: string, viewCreator: any): void;
+	registerView(type: string, viewCreator: any): void
 
-	loadData(): Promise<any>;
+	loadData(): Promise<any>
 
-	saveData(data: any): Promise<void>;
+	saveData(data: any): Promise<void>
 
-	registerEvent(event: any): void;
+	registerEvent(event: any): void
 
-	registerInterval(id: any): void;
+	registerInterval(id: any): void
 
-	registerMarkdownPostProcessor(processor: any): void;
+	registerMarkdownPostProcessor(processor: any): void
 
-	registerCodeMirror(callback: any): void;
+	registerCodeMirror(callback: any): void
 
-	registerDomEvent(el: any, type: string, callback: any): void;
+	registerDomEvent(el: any, type: string, callback: any): void
 
-	registerObsidianProtocolHandler(protocol: string, handler: any): void;
+	registerObsidianProtocolHandler(protocol: string, handler: any): void
 
-	registerExtensions(extensions: string[], processor: any): void;
+	registerExtensions(extensions: string[], processor: any): void
 
-	[key: string]: any; // Allow any other properties
+	[key: string]: any // Allow any other properties
 }
 
 export interface FileStats {
-	mtime: number;
+	mtime: number
 }
 
 export interface TFile {
-	path: string;
-	name: string;
-	extension: string;
-	stat: FileStats;
+	path: string
+	name: string
+	extension: string
+	stat: FileStats
 
-	read(): Promise<string>;
+	read(): Promise<string>
 }
 
 export interface TFolder {
-	path: string;
+	path: string
 }

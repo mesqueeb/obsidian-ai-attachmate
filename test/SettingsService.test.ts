@@ -1,55 +1,58 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {SettingsServiceImpl} from '../src/service/SettingsService';
-import {Plugin} from 'obsidian';
+import { Plugin } from 'obsidian'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { SettingsServiceImpl } from '../src/service/SettingsService'
 
 function makePlugin(): Plugin {
-	const plugin = new Plugin() as Plugin & {loadData: () => Promise<unknown>; saveData: (data: unknown) => Promise<void>};
-	plugin.loadData = async () => ({});
-	plugin.saveData = async () => {};
-	return plugin;
+	const plugin = new Plugin() as Plugin & {
+		loadData: () => Promise<unknown>
+		saveData: (data: unknown) => Promise<void>
+	}
+	plugin.loadData = async () => ({})
+	plugin.saveData = async () => {}
+	return plugin
 }
 
 describe('SettingsService', () => {
-	let service: SettingsServiceImpl;
+	let service: SettingsServiceImpl
 
 	beforeEach(() => {
-		service = new SettingsServiceImpl(makePlugin());
-	});
+		service = new SettingsServiceImpl(makePlugin())
+	})
 
 	it('fileFilter defaults to **/*.{canvas,pdf,png,jpg,jpeg}', () => {
-		expect(service.fileFilter).toBe('**/*.{canvas,pdf,png,jpg,jpeg}');
-	});
+		expect(service.fileFilter).toBe('**/*.{canvas,pdf,png,jpg,jpeg}')
+	})
 
 	it('updateFileFilter persists the new value', async () => {
-		await service.updateFileFilter('custom/**/*.png');
-		expect(service.fileFilter).toBe('custom/**/*.png');
-	});
+		await service.updateFileFilter('custom/**/*.png')
+		expect(service.fileFilter).toBe('custom/**/*.png')
+	})
 
 	it('restoreDefaults resets fileFilter to default', async () => {
-		await service.updateFileFilter('custom/**/*.png');
-		await service.restoreDefaults();
-		expect(service.fileFilter).toBe('**/*.{canvas,pdf,png,jpg,jpeg}');
-	});
+		await service.updateFileFilter('custom/**/*.png')
+		await service.restoreDefaults()
+		expect(service.fileFilter).toBe('**/*.{canvas,pdf,png,jpg,jpeg}')
+	})
 
 	describe('updateIndexFolder', () => {
 		it('accepts a 2-character value like "./"', async () => {
-			await service.updateIndexFolder('./');
-			expect(service.indexFolder).toBe('./');
-		});
+			await service.updateIndexFolder('./')
+			expect(service.indexFolder).toBe('./')
+		})
 
 		it('accepts a 3-character value like "../"', async () => {
-			await service.updateIndexFolder('../');
-			expect(service.indexFolder).toBe('../');
-		});
+			await service.updateIndexFolder('../')
+			expect(service.indexFolder).toBe('../')
+		})
 
 		it('falls back to "index" for a 1-character value', async () => {
-			await service.updateIndexFolder('x');
-			expect(service.indexFolder).toBe('index');
-		});
+			await service.updateIndexFolder('x')
+			expect(service.indexFolder).toBe('index')
+		})
 
 		it('falls back to "index" for an empty string', async () => {
-			await service.updateIndexFolder('');
-			expect(service.indexFolder).toBe('index');
-		});
-	});
-});
+			await service.updateIndexFolder('')
+			expect(service.indexFolder).toBe('index')
+		})
+	})
+})

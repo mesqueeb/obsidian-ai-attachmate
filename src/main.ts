@@ -1,49 +1,52 @@
-import {Plugin, Notice, Platform} from 'obsidian';
-import {CanvasService} from './service/CanvasService';
-import {FileDaoImpl} from './dao/FileDaoImpl';
-import {ObsidianFileAdapter} from './dao/ObsidianFileAdapter';
-import {FileAdapter} from './dao/FileAdapter';
-import {SettingsServiceImpl} from "./service/SettingsService";
-import {SettingsTab} from './utils/SettingsTab';
-import {PngConverterService} from './service/PngConverterService';
-import {JpgConverterService} from './service/JpgConverterService';
-import { JpegConverterService } from './service/JpegConverterService';
-import { GeminiAttachmentParserService, FatalProcessingError } from './service/AttachmentParserService';
-import { PdfConverterService } from './service/PdfConverterService';
-import { ConversionStatusTracker } from './service/ConversionStatusTracker';
-import { StatusView, STATUS_VIEW_TYPE } from './utils/StatusView';
+import { Notice, Platform, Plugin } from 'obsidian'
+import { FileAdapter } from './dao/FileAdapter'
+import { FileDaoImpl } from './dao/FileDaoImpl'
+import { ObsidianFileAdapter } from './dao/ObsidianFileAdapter'
+import {
+	FatalProcessingError,
+	GeminiAttachmentParserService,
+} from './service/AttachmentParserService'
+import { CanvasService } from './service/CanvasService'
+import { ConversionStatusTracker } from './service/ConversionStatusTracker'
+import { JpegConverterService } from './service/JpegConverterService'
+import { JpgConverterService } from './service/JpgConverterService'
+import { PdfConverterService } from './service/PdfConverterService'
+import { PngConverterService } from './service/PngConverterService'
+import { SettingsServiceImpl } from './service/SettingsService'
+import { SettingsTab } from './utils/SettingsTab'
+import { STATUS_VIEW_TYPE, StatusView } from './utils/StatusView'
 
 export default class ObsidianIndexer extends Plugin {
-	private isConverting = false;
+	private isConverting = false
 
 	override async onload() {
 		// Initialize settings manager and load settings
-		const settingsService = new SettingsServiceImpl(this);
-		await settingsService.loadSettings();
+		const settingsService = new SettingsServiceImpl(this)
+		await settingsService.loadSettings()
 
 		// Initialize status tracker
-		const statusTracker = new ConversionStatusTracker();
+		const statusTracker = new ConversionStatusTracker()
 
 		// Register status view
-		this.registerView(STATUS_VIEW_TYPE, (leaf) => new StatusView(leaf, statusTracker));
+		this.registerView(STATUS_VIEW_TYPE, (leaf) => new StatusView(leaf, statusTracker))
 
 		// Add ribbon button to open status view
 		this.addRibbonIcon('list-checks', 'Indexer Status', async () => {
-			const existing = this.app.workspace.getLeavesOfType(STATUS_VIEW_TYPE);
+			const existing = this.app.workspace.getLeavesOfType(STATUS_VIEW_TYPE)
 			if (existing.length > 0) {
-				this.app.workspace.revealLeaf(existing[0]);
+				this.app.workspace.revealLeaf(existing[0])
 			} else {
-				const leaf = this.app.workspace.getLeaf('tab');
-				await leaf.setViewState({ type: STATUS_VIEW_TYPE, active: true });
-				this.app.workspace.revealLeaf(leaf);
+				const leaf = this.app.workspace.getLeaf('tab')
+				await leaf.setViewState({ type: STATUS_VIEW_TYPE, active: true })
+				this.app.workspace.revealLeaf(leaf)
 			}
-		});
+		})
 
 		// Initialize dependencies
-		const fileAdapter: FileAdapter = new ObsidianFileAdapter(this.app);
-		const fileDao = new FileDaoImpl(fileAdapter);
-		const canvasService = new CanvasService(fileDao, settingsService);
-		
+		const fileAdapter: FileAdapter = new ObsidianFileAdapter(this.app)
+		const fileDao = new FileDaoImpl(fileAdapter)
+		const canvasService = new CanvasService(fileDao, settingsService)
+
 		// Create parser instances with specific prompts for each type
 		const pdfParser = new GeminiAttachmentParserService(
 			settingsService,
@@ -53,98 +56,118 @@ export default class ObsidianIndexer extends Plugin {
 - Never use bold text (**like this**) as a substitute for headings
 - Preserve all body text faithfully and in full
 - Render tables using markdown table syntax, always with a blank line before and after the table
-- For figures and images, write a brief italicised description on its own line`
-		);
+- For figures and images, write a brief italicised description on its own line`,
+		)
 
 		const pngParser = new GeminiAttachmentParserService(
-			settingsService, 
+			settingsService,
 			'image/png',
-			"Extract and summarize the content of this image. Provide the complete text and a brief summary."
-		);
+			'Extract and summarize the content of this image. Provide the complete text and a brief summary.',
+		)
 
 		const jpgParser = new GeminiAttachmentParserService(
-			settingsService, 
+			settingsService,
 			'image/jpeg',
-			"Extract and summarize the content of this image. Provide the complete text and a brief summary."
-		);
+			'Extract and summarize the content of this image. Provide the complete text and a brief summary.',
+		)
 
 		const jpegParser = new GeminiAttachmentParserService(
-			settingsService, 
+			settingsService,
 			'image/jpeg',
-			"Extract and summarize the content of this image. Provide the complete text and a brief summary."
-		);
+			'Extract and summarize the content of this image. Provide the complete text and a brief summary.',
+		)
 
 		// Create converters
-		const pdfConverter = new PdfConverterService(fileDao, settingsService.indexFolder, pdfParser, settingsService.fileFilter);
-		const pngConverter = new PngConverterService(fileDao, settingsService.indexFolder, pngParser, settingsService.fileFilter);
-		const jpgConverter = new JpgConverterService(fileDao, settingsService.indexFolder, jpgParser, settingsService.fileFilter);
-		const jpegConverter = new JpegConverterService(fileDao, settingsService.indexFolder, jpegParser, settingsService.fileFilter);
+		const pdfConverter = new PdfConverterService(
+			fileDao,
+			settingsService.indexFolder,
+			pdfParser,
+			settingsService.fileFilter,
+		)
+		const pngConverter = new PngConverterService(
+			fileDao,
+			settingsService.indexFolder,
+			pngParser,
+			settingsService.fileFilter,
+		)
+		const jpgConverter = new JpgConverterService(
+			fileDao,
+			settingsService.indexFolder,
+			jpgParser,
+			settingsService.fileFilter,
+		)
+		const jpegConverter = new JpegConverterService(
+			fileDao,
+			settingsService.indexFolder,
+			jpegParser,
+			settingsService.fileFilter,
+		)
 
 		// Wire status tracker into all converters
-		canvasService.setStatusTracker(statusTracker);
-		pdfConverter.setStatusTracker(statusTracker);
-		pngConverter.setStatusTracker(statusTracker);
-		jpgConverter.setStatusTracker(statusTracker);
-		jpegConverter.setStatusTracker(statusTracker);
+		canvasService.setStatusTracker(statusTracker)
+		pdfConverter.setStatusTracker(statusTracker)
+		pngConverter.setStatusTracker(statusTracker)
+		jpgConverter.setStatusTracker(statusTracker)
+		jpegConverter.setStatusTracker(statusTracker)
 
 		// Initialize converters and other services
 		const runConversion = async () => {
 			if (this.isConverting) {
-				new Notice('Conversion is already in progress. Please wait.');
-				return;
+				new Notice('Conversion is already in progress. Please wait.')
+				return
 			}
 
-			this.isConverting = true;
+			this.isConverting = true
 			try {
 				// Run converters sequentially
-				await canvasService.convertFiles();
-				await pdfConverter.convertFiles();
-				await pngConverter.convertFiles();
-				await jpgConverter.convertFiles();
-				await jpegConverter.convertFiles();
-				
+				await canvasService.convertFiles()
+				await pdfConverter.convertFiles()
+				await pngConverter.convertFiles()
+				await jpgConverter.convertFiles()
+				await jpegConverter.convertFiles()
+
 				// Show success notification
-				new Notice('All attachments have been processed successfully');
+				new Notice('All attachments have been processed successfully')
 			} catch (error) {
 				if (error instanceof FatalProcessingError) {
 					// Show error notification
-					new Notice('Processing stopped due to Gemini API errors. Please try again later.');
-					console.error('Conversion process stopped:', error.message);
+					new Notice('Processing stopped due to Gemini API errors. Please try again later.')
+					console.error('Conversion process stopped:', error.message)
 				} else {
 					// Handle other errors
-					new Notice('An error occurred during processing');
-					console.error('Conversion error:', error);
+					new Notice('An error occurred during processing')
+					console.error('Conversion error:', error)
 				}
 			} finally {
-				this.isConverting = false;
+				this.isConverting = false
 			}
-		};
+		}
 
 		// Add settings tab
-		this.addSettingTab(new SettingsTab(this.app, this, settingsService));
+		this.addSettingTab(new SettingsTab(this.app, this, settingsService))
 
 		// Add command for manual conversion
 		this.addCommand({
 			id: 'convert-canvas-files',
 			name: 'Convert attachment files to Markdown',
 			callback: async () => {
-				await runConversion();
+				await runConversion()
 			},
-		});
+		})
 
 		// Schedule a delayed conversion if runOnStart is enabled
-		const shouldAutoStart = Platform.isMobile 
-			? settingsService.runOnStartMobile 
-			: settingsService.runOnStart;
+		const shouldAutoStart = Platform.isMobile
+			? settingsService.runOnStartMobile
+			: settingsService.runOnStart
 
 		if (shouldAutoStart) {
 			this.app.workspace.onLayoutReady(() => {
-				runConversion();
-			});
+				runConversion()
+			})
 		}
 	}
 
 	override onunload() {
-		console.log('Obsidian Indexer plugin unloaded.');
+		console.log('Obsidian Indexer plugin unloaded.')
 	}
 }

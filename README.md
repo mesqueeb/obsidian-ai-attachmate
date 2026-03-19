@@ -37,13 +37,13 @@ By default, all supported files in your vault are transcribed (`**/*.{canvas,pdf
 
 The `**` wildcard matches any number of nested folders, while `*` matches within a single folder only. This distinction matters a lot:
 
-| Pattern | Matches | Doesn't match |
-|---------|---------|---------------|
-| `**/*.{canvas,pdf,png,jpg,jpeg}` | All supported files, anywhere in the vault (default) | — |
-| `**/attachments/*.{canvas,pdf,png,jpg,jpeg}` | Files directly inside any `attachments/` folder, at any depth | Files in subfolders of `attachments/` |
-| `attachments/*.{canvas,pdf,png,jpg,jpeg}` | Files directly inside the top-level `attachments/` folder only | `notes/attachments/file.pdf` |
-| `**/attachments/**/*.{canvas,pdf,png,jpg,jpeg}` | Files anywhere inside any `attachments/` folder, at any depth | — |
-| `**/*.pdf` | Only PDFs, anywhere in the vault | Canvas, images |
+| Pattern                                         | Matches                                                        | Doesn't match                         |
+| ----------------------------------------------- | -------------------------------------------------------------- | ------------------------------------- |
+| `**/*.{canvas,pdf,png,jpg,jpeg}`                | All supported files, anywhere in the vault (default)           | —                                     |
+| `**/attachments/*.{canvas,pdf,png,jpg,jpeg}`    | Files directly inside any `attachments/` folder, at any depth  | Files in subfolders of `attachments/` |
+| `attachments/*.{canvas,pdf,png,jpg,jpeg}`       | Files directly inside the top-level `attachments/` folder only | `notes/attachments/file.pdf`          |
+| `**/attachments/**/*.{canvas,pdf,png,jpg,jpeg}` | Files anywhere inside any `attachments/` folder, at any depth  | —                                     |
+| `**/*.pdf`                                      | Only PDFs, anywhere in the vault                               | Canvas, images                        |
 
 **Recommended setup:** configure Obsidian's attachment folder to `attachments/` (Settings → Files & Links → Default location for new attachments → "In the folder specified below"), then set the file filter to `**/attachments/*.{canvas,pdf,png,jpg,jpeg}`. Every file you attach to any note gets transcribed automatically.
 
@@ -51,10 +51,10 @@ The `**` wildcard matches any number of nested folders, while `*` matches within
 
 By default, transcripts are placed **in the same folder as the source file** (`./`). You can also collect them all in one place using an absolute path.
 
-| Setting | Effect |
-|---------|--------|
-| `./` | Transcript is placed in the same folder as the source file (default) |
-| `index` | All transcripts go into `/index/` at the vault root |
+| Setting          | Effect                                                                         |
+| ---------------- | ------------------------------------------------------------------------------ |
+| `./`             | Transcript is placed in the same folder as the source file (default)           |
+| `index`          | All transcripts go into `/index/` at the vault root                            |
 | `../transcripts` | Transcript goes into a `transcripts/` folder one level up from the source file |
 
 Relative paths starting with `./` or `../` are resolved per file. If a `../` path would go above the vault root, it clamps to the root instead of erroring.
@@ -71,11 +71,11 @@ Relative paths starting with `./` or `../` are resolved per file. If a `../` pat
 
 ## Supported file types
 
-| File type | Requires API key |
-|-----------|-----------------|
-| Canvas (`.canvas`) | No |
-| PDF (`.pdf`) | Yes |
-| Image (`.png`, `.jpg`, `.jpeg`) | Yes |
+| File type                       | Requires API key |
+| ------------------------------- | ---------------- |
+| Canvas (`.canvas`)              | No               |
+| PDF (`.pdf`)                    | Yes              |
+| Image (`.png`, `.jpg`, `.jpeg`) | Yes              |
 
 ## License
 
