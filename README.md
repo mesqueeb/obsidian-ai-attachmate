@@ -2,22 +2,7 @@
 
 **AI Attachmate** transcribes your PDFs, images, and Canvas files into searchable Markdown notes using AI. You control which files get transcribed, with what prompt, and where the transcription is saved — bring your own key.
 
-Once set up, it just works in the background: attach a file, get a Markdown transcript. No fuss.
-
-## A workflow that works great
-
-Here's a setup that feels really natural:
-
-- Set the **file filter** to something like `attachments/**` to limit transcription to files nested under your `/attachments/` folder
-- Set the **index folder** to `./` (relative, same folder as the original file)
-
-With this setup, any PDF you drop into an Obsidian note gets a full transcript right alongside it — automatically. The transcript includes a section at the top where you can write your own notes, and those notes are preserved even if the original file changes and the transcript is regenerated.
-
-![Plugin settings](./assets/settings.png)
-
-![Generated transcript](./assets/transcript.png)
-
-![Status view](./assets/status-view.png)
+Once set up, it runs in the background: attach a file, get a Markdown transcript.
 
 ## Features
 
@@ -31,43 +16,42 @@ With this setup, any PDF you drop into an Obsidian note gets a full transcript r
 - **Orphan cleanup** — when you delete an attachment, its transcript is removed too
 - **Canvas support without an API key** — Canvas files are converted locally, no AI needed
 
+## Google Gemini API Key
+
+PDFs and images are processed by Google Gemini. [Get your API key here](https://aistudio.google.com/app/apikey) — the free tier works fine. Canvas files work without a key.
+
+The free tier has a daily request cap, so a large vault may take several hours or a couple of days to fully process on first run. That's normal — the plugin picks up where it left off each time it runs.
+
+Only Google Gemini is supported as the AI provider for now. Feel free to open an issue if you'd like support for another.
+
 ## File filter
 
 By default, all supported files in your vault are transcribed (`**/*.{canvas,pdf,png,jpg,jpeg}`). You can narrow this down using a glob pattern in the **File Filter** setting.
 
-The `**` wildcard matches any number of nested folders, while `*` matches within a single folder only. This distinction matters a lot:
+The `**` wildcard matches any number of nested folders, while `*` matches within a single folder only.
 
-| Pattern                                         | Matches                                                        | Doesn't match                         |
-| ----------------------------------------------- | -------------------------------------------------------------- | ------------------------------------- |
-| `**/*.{canvas,pdf,png,jpg,jpeg}`                | All supported files, anywhere in the vault (default)           | —                                     |
-| `**/attachments/*.{canvas,pdf,png,jpg,jpeg}`    | Files directly inside any `attachments/` folder, at any depth  | Files in subfolders of `attachments/` |
-| `attachments/*.{canvas,pdf,png,jpg,jpeg}`       | Files directly inside the top-level `attachments/` folder only | `notes/attachments/file.pdf`          |
-| `**/attachments/**/*.{canvas,pdf,png,jpg,jpeg}` | Files anywhere inside any `attachments/` folder, at any depth  | —                                     |
-| `**/*.pdf`                                      | Only PDFs, anywhere in the vault                               | Canvas, images                        |
+| Pattern                                         | Effect                                                                                                           |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `**/*.{canvas,pdf,png,jpg,jpeg}`                | All supported files, anywhere in the vault (default)                                                             |
+| `**/*.pdf`                                      | Only PDFs, anywhere in the vault                                                                                 |
+| `**/attachments/**/*.{canvas,pdf,png,jpg,jpeg}` | Files anywhere inside any `attachments/` folder, at any depth                                                    |
+| `**/attachments/*.{canvas,pdf,png,jpg,jpeg}`    | Files directly inside any `attachments/` folder, at any depth<br>(not files nested deeper inside `attachments/`) |
+| `attachments/*.{canvas,pdf,png,jpg,jpeg}`       | Files directly inside the top-level `attachments/` folder only<br>(not `notes/attachments/file.pdf`)             |
 
 **Recommended setup:** configure Obsidian's attachment folder to `attachments/` (Settings → Files & Links → Default location for new attachments → "In the folder specified below"), then set the file filter to `**/attachments/*.{canvas,pdf,png,jpg,jpeg}`. Every file you attach to any note gets transcribed automatically.
 
 ## Index folder (where transcripts are saved)
 
-By default, transcripts are placed **in the same folder as the source file** (`./`). You can also collect them all in one place using an absolute path.
+By default, transcripts are placed in the same folder as the source file (`./`). You can also use a relative path to go up a level, or an absolute folder name to collect everything in one place.
 
-| Setting          | Effect                                                                         |
-| ---------------- | ------------------------------------------------------------------------------ |
-| `./`             | Transcript is placed in the same folder as the source file (default)           |
-| `index`          | All transcripts go into `/index/` at the vault root                            |
-| `../transcripts` | Transcript goes into a `transcripts/` folder one level up from the source file |
+| Setting          | Effect                                                         |
+| ---------------- | -------------------------------------------------------------- |
+| `./`             | Transcript placed next to the source file (default)            |
+| `../`            | Transcript placed in the parent folder of the source file      |
+| `../transcripts` | Transcript placed in a `transcripts/` folder one level up      |
+| `transcripts`    | All transcripts collected in `/transcripts/` at the vault root |
 
-Relative paths starting with `./` or `../` are resolved per file. If a `../` path would go above the vault root, it clamps to the root instead of erroring.
-
-## Setup
-
-1. Install the plugin
-2. Go to **Settings → AI Attachmate**
-3. Add your [Google Gemini API key](https://aistudio.google.com/app/apikey) (free tier works fine)
-4. Optionally configure the file filter, index folder, prompt, and template
-5. Run the transcription manually or let it run automatically on startup
-
-> Currently supports Google Gemini as the AI provider. Feel free to open an issue if you'd like support for another model provider.
+Relative paths (`./`, `../`) are resolved per file. If a `../` path would go above the vault root, it clamps to the root instead of erroring.
 
 ## Supported file types
 
@@ -76,6 +60,17 @@ Relative paths starting with `./` or `../` are resolved per file. If a `../` pat
 | Canvas (`.canvas`)              | No               |
 | PDF (`.pdf`)                    | Yes              |
 | Image (`.png`, `.jpg`, `.jpeg`) | Yes              |
+
+## Build from source
+
+```sh
+git clone https://github.com/mesqueeb/obsidian-ai-attachmate
+cd obsidian-ai-attachmate
+npm install
+npm run build-and-install -- /path/to/your/obsidian/vault
+```
+
+Then reload the plugin in Obsidian (Settings → Community plugins → AI Attachmate → toggle off and on).
 
 ## License
 
