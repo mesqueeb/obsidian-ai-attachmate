@@ -21,7 +21,7 @@ export class File {
 	}
 }
 
-export interface FileDao {
+export type FileDao = {
 	deleteFile(filePath: string): Promise<void>
 
 	createFolder(folderPath: string): Promise<void>

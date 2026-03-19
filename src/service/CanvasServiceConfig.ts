@@ -1,4 +1,4 @@
-export interface CanvasServiceConfig {
+export type CanvasServiceConfig = {
 	readonly indexFolder: string
 	readonly canvasPostfix: string
 	readonly runOnStart: boolean

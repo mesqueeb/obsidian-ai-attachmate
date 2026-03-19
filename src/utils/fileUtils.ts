@@ -1,9 +1,9 @@
-export interface CanvasNode {
+export type CanvasNode = {
 	type: string
 	[key: string]: unknown
 }
 
-export interface CanvasJson {
+export type CanvasJson = {
 	nodes: CanvasNode[]
 }
 
@@ -29,7 +29,7 @@ export function parseCanvasContent(content: string): CanvasJson | null {
 			return null
 		}
 		return json as CanvasJson
-	} catch (e) {
+	} catch {
 		return null
 	}
 }

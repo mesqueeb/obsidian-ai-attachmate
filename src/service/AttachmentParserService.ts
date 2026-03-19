@@ -1,10 +1,10 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-export interface AttachmentParserConfig {
+export type AttachmentParserConfig = {
 	getApiKey: () => string
 }
 
-export interface AttachmentParserService {
+export type AttachmentParserService = {
 	parseAttachmentContent(
 		fileSizeMB: number,
 		getBuffer: () => Promise<ArrayBuffer>,

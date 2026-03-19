@@ -4,7 +4,7 @@ import { AttachmentParserConfig } from './AttachmentParserService'
 
 export const DEFAULT_FILE_FILTER = '**/*.{canvas,pdf,png,jpg,jpeg}'
 
-export interface Settings {
+export type Settings = {
 	runOnStart: boolean
 	runOnStartMobile: boolean
 	indexFolder: string
@@ -12,7 +12,7 @@ export interface Settings {
 	fileFilter: string
 }
 
-export interface SettingsService extends CanvasServiceConfig {
+export type SettingsService = CanvasServiceConfig & {
 	readonly runOnStart: boolean
 	readonly runOnStartMobile: boolean
 	readonly indexFolder: string

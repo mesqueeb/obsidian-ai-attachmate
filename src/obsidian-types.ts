@@ -1,4 +1,4 @@
-export interface Plugin {
+export type Plugin = {
 	manifest: {
 		dir: string
 	}
@@ -39,11 +39,11 @@ export interface Plugin {
 	[key: string]: any // Allow any other properties
 }
 
-export interface FileStats {
+export type FileStats = {
 	mtime: number
 }
 
-export interface TFile {
+export type TFile = {
 	path: string
 	name: string
 	extension: string
@@ -52,6 +52,6 @@ export interface TFile {
 	read(): Promise<string>
 }
 
-export interface TFolder {
+export type TFolder = {
 	path: string
 }

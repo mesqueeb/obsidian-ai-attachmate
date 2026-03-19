@@ -1,4 +1,4 @@
-export interface StorageAdapter {
+export type StorageAdapter = {
 	exists(path: string): Promise<boolean>
 
 	mkdir(path: string): Promise<void>

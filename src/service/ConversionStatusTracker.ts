@@ -1,6 +1,6 @@
 export type ConversionStatus = 'pending' | 'processing' | 'done' | 'error'
 
-export interface FileStatus {
+export type FileStatus = {
 	path: string
 	status: ConversionStatus
 	errorMessage?: string

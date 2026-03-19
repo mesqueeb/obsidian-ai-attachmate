@@ -1,11 +1,11 @@
-export interface AdapterFile {
+export type AdapterFile = {
 	path: string
 	name: string
 	modifiedTime: number
 	sizeInBytes: number
 }
 
-export interface FileAdapter {
+export type FileAdapter = {
 	createFolder(folderPath: string): Promise<void>
 
 	getFiles(): Promise<AdapterFile[]>
