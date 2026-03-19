@@ -107,7 +107,7 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 		return {
 			runOnStart: true,
 			runOnStartMobile: false, // Default to false for mobile for safety
-			indexFolder: 'index',
+			indexFolder: './',
 			googleApiKey: '',
 			fileFilter: DEFAULT_FILE_FILTER
 		};

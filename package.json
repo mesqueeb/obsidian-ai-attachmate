@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "2.0.3",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "obsidian-ai-attachmate",
+	"version": "3.0.0",
+	"description": "Transcribes your PDFs, images, and Canvas files into searchable Markdown notes using AI.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
@@ -11,7 +11,7 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "MIT",
+	"license": "AGPL-3.0",
 	"devDependencies": {
 		"@types/micromatch": "^4.0.10",
 		"@types/node": "^20.11.24",

@@ -1,9 +1,9 @@
 {
-	"id": "attachments-md-indexer",
-	"name": "Attachments MD Indexer",
-	"version": "2.0.4",
-	"minAppVersion": "1.8.9",
-	"description": "Creates searchable metadata notes for Canvas files, PDFs, and images, enhancing graph view visibility and plugin compatibility",
-	"author": "Ian Inkov",
+	"id": "ai-attachmate",
+	"name": "AI Attachmate",
+	"version": "3.0.0",
+	"minAppVersion": "1.9.12",
+	"description": "Transcribes your PDFs, images, and Canvas files into searchable Markdown notes using AI. You control which files get transcribed, with what prompt, and where the transcription is saved. Bring your own key.",
+	"author": "mesqueeb — Luca Ban",
 	"isDesktopOnly": false
 }

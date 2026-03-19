@@ -14,25 +14,12 @@ export class SettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		// Add comprehensive plugin description at the top
 		const descriptionEl = containerEl.createEl('div', { cls: 'plugin-description' });
-		
-		descriptionEl.createEl('h2', { text: 'How This Plugin Works' });
-		
-		const mainDescription = descriptionEl.createEl('p');
-		mainDescription.innerHTML = `This plugin creates and synchronizes searchable markdown index files for various attachment types in your vault. It extracts and indexes complete text content, enabling both full-text and content-based search (e.g., finding images by words like "Flowers" or "Receipt"). Index files are automatically removed when originals are deleted:
-		<ul>
-			<li><strong>Canvas files</strong> (.canvas): Converts canvas JSON into markdown format with links to nodes and groups</li>
-			<li><strong>PDF files</strong> (.pdf): Creates markdown files with PDF viewer and extracts complete text content for searching (requires Google API key)</li>
-			<li><strong>Image files</strong> (.png, .jpg, .jpeg): Creates markdown files with embedded images and extracts all visible text for searching (requires Google API key)</li>
-		</ul>
-		All indexed files are stored in the specified index folder with their original extension plus ".md" (e.g., file.canvas → index/file.canvas.md). The plugin maintains synchronization, updating index files when originals change and removing them when originals are deleted.
-		<br><br>
-		<strong>Orphan cleanup with relative paths:</strong> When using a relative Index Folder (e.g. <code>../</code>), each source file's output lands in a different folder. The plugin scans all derived output folders rather than a single central folder, and uses content markers to identify generated files — so it will never delete user-created files that happen to share a name pattern.`;
+		descriptionEl.createEl('p', { text: 'AI Attachmate watches your vault and transcribes PDFs, images, and Canvas files into Markdown — automatically. Each transcript includes a section at the top where you can add your own notes, and those notes are preserved even when the file is re-transcribed.' });
 
 		new Setting(containerEl)
 			.setName('Run on start')
-			.setDesc('Automatically convert files when plugin loads')
+			.setDesc('Automatically transcribe new or changed files when Obsidian loads.')
 			.addToggle(toggle => toggle
 				.setValue(this.settingsService.runOnStart)
 				.onChange(async (value) => {
@@ -41,7 +28,7 @@ export class SettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Run on start (Mobile)')
-			.setDesc('Automatically convert files when plugin loads on mobile devices. Separate from desktop setting to help prevent crashes. It is recommended to enable this only after initial indexation is complete, as the process could take up to several days for large vaults and might cause Obsidian to restart if big files are present.')
+			.setDesc('Same as above, but for mobile. Disabled by default — enable only after the initial transcription is done, as large vaults can take a while and may cause Obsidian to restart on mobile.')
 			.addToggle(toggle => toggle
 				.setValue(this.settingsService.runOnStartMobile)
 				.onChange(async (value) => {
@@ -49,8 +36,16 @@ export class SettingsTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('File Filter')
-			.setDesc('Only process files that match this glob pattern')
+			.setName('File filter')
+			.setDesc(createFragment(el => {
+				el.appendText('Glob pattern to control which files get transcribed. Default: ');
+				el.createEl('code', {text: '**/*.{canvas,pdf,png,jpg,jpeg}'});
+				el.appendText(' (everything). Use ');
+				el.createEl('code', {text: '**/attachments/*.{canvas,pdf,png,jpg,jpeg}'});
+				el.appendText(' to only transcribe files directly inside any ');
+				el.createEl('code', {text: 'attachments/'});
+				el.appendText(' folder.');
+			}))
 			.addText(text => text
 				.setPlaceholder('**/*.{canvas,pdf,png,jpg,jpeg}')
 				.setValue(this.settingsService.fileFilter)
@@ -61,18 +56,14 @@ export class SettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Index folder')
 			.setDesc(createFragment(el => {
-				el.appendText('Folder to store converted files. Supports relative paths: ');
+				el.appendText('Where to save transcripts. Use ');
 				el.createEl('code', {text: './'});
-				el.appendText(' places index files alongside the originals, ');
-				el.createEl('code', {text: '../'});
-				el.appendText(' places them in the parent folder. Example: set Filter to ');
-				el.createEl('code', {text: '**/attachments/*.pdf'});
-				el.appendText(' and Index Folder to ');
-				el.createEl('code', {text: '../'});
-				el.appendText(' to index all PDFs in any attachments/ folder and place the .pdf.md output in its parent. If you change this setting, manually rename or delete the old folder and re-run the conversion.');
+				el.appendText(' to place each transcript next to its source file (default), or a folder name like ');
+				el.createEl('code', {text: 'index'});
+				el.appendText(' to collect them all in one place. If you change this setting, delete the old folder and re-run the transcription.');
 			}))
 			.addText(text => text
-				.setPlaceholder('index')
+				.setPlaceholder('./')
 				.setValue(this.settingsService.indexFolder)
 				.onChange(async (value) => {
 					await this.settingsService.updateIndexFolder(value);
@@ -81,12 +72,13 @@ export class SettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Google API Key')
 			.setDesc(createFragment(el => {
-				el.appendText('Without this key, only Canvas files will be indexed. While Gemini has daily limits, they are usually sufficient for free usage. PDFs and images will be indexed gradually over several hours. Get your key here: ');
+				el.appendText('Required for PDFs and images. Canvas files work without a key. Gemini\'s free tier is generous enough for most vaults. Get your key at ');
 				el.createEl('a', {
 					href: 'https://aistudio.google.com/app/apikey',
-					text: 'https://aistudio.google.com/app/apikey',
+					text: 'aistudio.google.com',
 					cls: 'external-link'
 				});
+				el.appendText('.');
 			}))
 			.addText(text => {
 				text.inputEl.type = 'password';
@@ -99,8 +91,8 @@ export class SettingsTab extends PluginSettingTab {
 
 		// Add Restore Defaults button
 		new Setting(containerEl)
-			.setName('Restore default settings')
-			.setDesc('Reset all settings to their default values')
+			.setName('Restore defaults')
+			.setDesc('Reset all settings to their default values.')
 			.addButton(button => button
 				.setButtonText('Restore defaults')
 				.onClick(async () => {
