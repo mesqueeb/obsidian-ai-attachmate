@@ -111,6 +111,26 @@ export class SettingsTab extends PluginSettingTab {
 			})
 
 		new Setting(containerEl)
+			.setName('Output Template')
+			.setDesc(
+				createFragment((el) => {
+					el.appendText('The header of every generated transcript file. Use ')
+					el.createEl('code', { text: '{{filename}}' })
+					el.appendText(' and ')
+					el.createEl('code', { text: '{{path}}' })
+					el.appendText(' as placeholders. The marker and transcript section are always appended automatically.')
+				}),
+			)
+			.addTextArea((text) => {
+				text.inputEl.rows = 10
+				text
+					.setValue(this.settingsService.template)
+					.onChange(async (value) => {
+						await this.settingsService.updateTemplate(value)
+					})
+			})
+
+		new Setting(containerEl)
 			.setName('Gemini Prompt')
 			.setDesc('The instruction sent to Gemini for all PDF and image files. Changing this takes effect on the next conversion run.')
 			.addTextArea((text) => {

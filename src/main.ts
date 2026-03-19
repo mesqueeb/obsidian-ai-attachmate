@@ -45,7 +45,8 @@ export default class ObsidianIndexer extends Plugin {
 		// Initialize dependencies
 		const fileAdapter: FileAdapter = new ObsidianFileAdapter(this.app)
 		const fileDao = new FileDaoImpl(fileAdapter)
-		const canvasService = new CanvasService(fileDao, settingsService)
+		const getTemplate = (): string => settingsService.template
+		const canvasService = new CanvasService(fileDao, settingsService, getTemplate)
 
 		// Create parser instances with specific prompts for each type
 		const getPrompt = (): string => settingsService.prompt
@@ -56,30 +57,10 @@ export default class ObsidianIndexer extends Plugin {
 		const jpegParser = new GeminiAttachmentParserService(settingsService, 'image/jpeg', getPrompt)
 
 		// Create converters
-		const pdfConverter = new PdfConverterService(
-			fileDao,
-			settingsService.indexFolder,
-			pdfParser,
-			settingsService.fileFilter,
-		)
-		const pngConverter = new PngConverterService(
-			fileDao,
-			settingsService.indexFolder,
-			pngParser,
-			settingsService.fileFilter,
-		)
-		const jpgConverter = new JpgConverterService(
-			fileDao,
-			settingsService.indexFolder,
-			jpgParser,
-			settingsService.fileFilter,
-		)
-		const jpegConverter = new JpegConverterService(
-			fileDao,
-			settingsService.indexFolder,
-			jpegParser,
-			settingsService.fileFilter,
-		)
+		const pdfConverter = new PdfConverterService(fileDao, settingsService.indexFolder, pdfParser, settingsService.fileFilter, getTemplate)
+		const pngConverter = new PngConverterService(fileDao, settingsService.indexFolder, pngParser, settingsService.fileFilter, getTemplate)
+		const jpgConverter = new JpgConverterService(fileDao, settingsService.indexFolder, jpgParser, settingsService.fileFilter, getTemplate)
+		const jpegConverter = new JpegConverterService(fileDao, settingsService.indexFolder, jpegParser, settingsService.fileFilter, getTemplate)
 
 		// Wire status tracker into all converters
 		canvasService.setStatusTracker(statusTracker)

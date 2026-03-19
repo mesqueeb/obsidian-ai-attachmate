@@ -1,6 +1,6 @@
 import { Plugin } from 'obsidian'
 import { CanvasServiceConfig } from '../service/CanvasServiceConfig'
-import { DEFAULT_FILE_FILTER, DEFAULT_INDEX_FOLDER, DEFAULT_PROMPT } from '../utils/constants'
+import { DEFAULT_FILE_FILTER, DEFAULT_INDEX_FOLDER, DEFAULT_PROMPT, DEFAULT_TEMPLATE } from '../utils/constants'
 import { AttachmentParserConfig } from './AttachmentParserService'
 
 export type Settings = {
@@ -10,6 +10,7 @@ export type Settings = {
 	googleApiKey: string
 	fileFilter: string
 	prompt: string
+	template: string
 }
 
 export type SettingsService = CanvasServiceConfig & {
@@ -20,6 +21,7 @@ export type SettingsService = CanvasServiceConfig & {
 	readonly canvasPostfix: string
 	readonly fileFilter: string
 	readonly prompt: string
+	readonly template: string
 	getApiKey(): string
 
 	updateRunOnStart(value: boolean): Promise<void>
@@ -28,6 +30,7 @@ export type SettingsService = CanvasServiceConfig & {
 	updateGoogleApiKey(value: string): Promise<void>
 	updateFileFilter(value: string): Promise<void>
 	updatePrompt(value: string): Promise<void>
+	updateTemplate(value: string): Promise<void>
 	restoreDefaults(): Promise<void>
 }
 
@@ -64,6 +67,10 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 
 	get prompt(): string {
 		return this.settings.prompt
+	}
+
+	get template(): string {
+		return this.settings.template
 	}
 
 	getApiKey(): string {
@@ -104,6 +111,11 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 		await this.saveSettings()
 	}
 
+	async updateTemplate(value: string): Promise<void> {
+		this.settings.template = value
+		await this.saveSettings()
+	}
+
 	async restoreDefaults(): Promise<void> {
 		this.settings = this.getDefaultSettings()
 		await this.saveSettings()
@@ -117,6 +129,7 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 			googleApiKey: '',
 			fileFilter: DEFAULT_FILE_FILTER,
 			prompt: DEFAULT_PROMPT,
+			template: DEFAULT_TEMPLATE,
 		}
 	}
 

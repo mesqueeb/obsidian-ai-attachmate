@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { DEFAULT_FILE_FILTER, DEFAULT_PROMPT } from '../src/utils/constants'
+import { DEFAULT_FILE_FILTER, DEFAULT_PROMPT, DEFAULT_TEMPLATE } from '../src/utils/constants'
 import { SettingsServiceImpl } from '../src/service/SettingsService'
 
 function makePlugin(): Plugin {
@@ -14,6 +14,23 @@ describe('SettingsService', () => {
 
 	beforeEach(() => {
 		service = new SettingsServiceImpl(makePlugin())
+	})
+
+	it('template defaults to a non-empty string matching DEFAULT_TEMPLATE', () => {
+		expect(typeof DEFAULT_TEMPLATE).toBe('string')
+		expect(DEFAULT_TEMPLATE.length).toBeGreaterThan(0)
+		expect(service.template).toBe(DEFAULT_TEMPLATE)
+	})
+
+	it('updateTemplate persists the new value', async () => {
+		await service.updateTemplate('custom template')
+		expect(service.template).toBe('custom template')
+	})
+
+	it('restoreDefaults resets template to DEFAULT_TEMPLATE', async () => {
+		await service.updateTemplate('custom template')
+		await service.restoreDefaults()
+		expect(service.template).toBe(DEFAULT_TEMPLATE)
 	})
 
 	it('prompt defaults to a non-empty string matching DEFAULT_PROMPT', () => {

@@ -18,3 +18,14 @@ export const DEFAULT_PROMPT = `Transcribe the complete content of this document 
 - Preserve all body text faithfully and in full
 - Render tables using markdown table syntax, always with a blank line before and after the table
 - For figures and images, write a brief italicised description on its own line`
+
+export const DEFAULT_TEMPLATE = `# Notes
+
+# Content
+
+File: [{{filename}}]({{path}})
+
+![[{{path}}#height=500]]
+
+> Feel free to write custom notes ABOVE this line, they will be preserved.
+> Please note: Deleting the original file will delete this file.`
