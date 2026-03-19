@@ -24,14 +24,14 @@ describe('Integration Test: Glob Filter', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 			fileFilter: 'attachments/*.canvas',
 		})
 		await service.convertFiles()
 
-		expect(await fileAdapter.read('index/InFilter.canvas.md')).toBeDefined()
-		await expect(fileAdapter.read('index/NotInFilter.canvas.md')).rejects.toThrow()
-		await expect(fileAdapter.read('index/AlsoNotInFilter.canvas.md')).rejects.toThrow()
+		expect(await fileAdapter.read('transcripts/InFilter.canvas.md')).toBeDefined()
+		await expect(fileAdapter.read('transcripts/NotInFilter.canvas.md')).rejects.toThrow()
+		await expect(fileAdapter.read('transcripts/AlsoNotInFilter.canvas.md')).rejects.toThrow()
 	})
 
 	it('filter with brace expansion *.{canvas,md} — matches multiple extensions', async () => {
@@ -42,13 +42,13 @@ describe('Integration Test: Glob Filter', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 			fileFilter: 'attachments/*.{canvas,md}',
 		})
 		await service.convertFiles()
 
 		// canvas matches filter AND is the converter's source extension → processed
-		expect(await fileAdapter.read('index/Doc.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/Doc.canvas.md')).toBeDefined()
 		// .png does not match filter → not processed (CanvasService wouldn't handle it anyway, but it's excluded at the gate)
 	})
 
@@ -62,16 +62,16 @@ describe('Integration Test: Glob Filter', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 			fileFilter: DEFAULT_FILE_FILTER,
 		})
 		await service.convertFiles()
 
-		expect(await fileAdapter.read('index/root.canvas.md')).toBeDefined()
-		expect(await fileAdapter.read('index/file.canvas.md')).toBeDefined()
-		expect(await fileAdapter.read('index/doc.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/root.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/file.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/doc.canvas.md')).toBeDefined()
 		// .png passes the filter but CanvasService ignores it — no .png.md created
-		await expect(fileAdapter.read('index/image.canvas.md')).rejects.toThrow()
+		await expect(fileAdapter.read('transcripts/image.canvas.md')).rejects.toThrow()
 	})
 
 	it('no fileFilter set — all canvas files anywhere in vault are processed (no regression)', async () => {
@@ -81,12 +81,12 @@ describe('Integration Test: Glob Filter', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 		})
 		await service.convertFiles()
 
-		expect(await fileAdapter.read('index/root.canvas.md')).toBeDefined()
-		expect(await fileAdapter.read('index/file.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/root.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/file.canvas.md')).toBeDefined()
 	})
 
 	it('filter **/attachments/*.canvas — ** is recursive: processes files in any attachments/ folder at any depth', async () => {
@@ -98,14 +98,14 @@ describe('Integration Test: Glob Filter', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 			fileFilter: '**/attachments/*.canvas',
 		})
 		await service.convertFiles()
 
-		expect(await fileAdapter.read('index/Root.canvas.md')).toBeDefined()
-		expect(await fileAdapter.read('index/Nested.canvas.md')).toBeDefined()
-		expect(await fileAdapter.read('index/VeryNested.canvas.md')).toBeDefined()
-		await expect(fileAdapter.read('index/NotInFilter.canvas.md')).rejects.toThrow()
+		expect(await fileAdapter.read('transcripts/Root.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/Nested.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/VeryNested.canvas.md')).toBeDefined()
+		await expect(fileAdapter.read('transcripts/NotInFilter.canvas.md')).rejects.toThrow()
 	})
 })

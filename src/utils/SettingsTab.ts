@@ -20,26 +20,6 @@ export class SettingsTab extends PluginSettingTab {
 		})
 
 		new Setting(containerEl)
-			.setName('Run on start')
-			.setDesc('Automatically transcribe new or changed files when Obsidian loads.')
-			.addToggle((toggle) =>
-				toggle.setValue(this.settingsService.runOnStart).onChange(async (value) => {
-					await this.settingsService.updateRunOnStart(value)
-				}),
-			)
-
-		new Setting(containerEl)
-			.setName('Run on start (Mobile)')
-			.setDesc(
-				'Same as above, but for mobile. Disabled by default — enable only after the initial transcription is done, as large vaults can take a while and may cause Obsidian to restart on mobile.',
-			)
-			.addToggle((toggle) =>
-				toggle.setValue(this.settingsService.runOnStartMobile).onChange(async (value) => {
-					await this.settingsService.updateRunOnStartMobile(value)
-				}),
-			)
-
-		new Setting(containerEl)
 			.setName('File filter')
 			.setDesc(
 				createFragment((el) => {
@@ -62,7 +42,7 @@ export class SettingsTab extends PluginSettingTab {
 			)
 
 		new Setting(containerEl)
-			.setName('Index folder')
+			.setName('Transcripts folder')
 			.setDesc(
 				createFragment((el) => {
 					el.appendText('Where to save transcripts. Use ')
@@ -70,7 +50,7 @@ export class SettingsTab extends PluginSettingTab {
 					el.appendText(
 						' to place each transcript next to its source file (default), or a folder name like ',
 					)
-					el.createEl('code', { text: 'index' })
+					el.createEl('code', { text: 'transcripts' })
 					el.appendText(
 						' to collect them all in one place. If you change this setting, delete the old folder and re-run the transcription.',
 					)
@@ -79,36 +59,11 @@ export class SettingsTab extends PluginSettingTab {
 			.addText((text) =>
 				text
 					.setPlaceholder('./')
-					.setValue(this.settingsService.indexFolder)
+					.setValue(this.settingsService.transcriptsFolder)
 					.onChange(async (value) => {
-						await this.settingsService.updateIndexFolder(value)
+						await this.settingsService.updateTranscriptsFolder(value)
 					}),
 			)
-
-		new Setting(containerEl)
-			.setName('Google API Key')
-			.setDesc(
-				createFragment((el) => {
-					el.appendText(
-						"Required for PDFs and images. Canvas files work without a key. Gemini's free tier is generous enough for most vaults. Get your key at ",
-					)
-					el.createEl('a', {
-						href: 'https://aistudio.google.com/app/apikey',
-						text: 'aistudio.google.com',
-						cls: 'external-link',
-					})
-					el.appendText('.')
-				}),
-			)
-			.addText((text) => {
-				text.inputEl.type = 'password'
-				text
-					.setPlaceholder('Enter your Google API key')
-					.setValue(this.settingsService.googleApiKey)
-					.onChange(async (value) => {
-						await this.settingsService.updateGoogleApiKey(value)
-					})
-			})
 
 		new Setting(containerEl)
 			.setName('Output Template')
@@ -131,6 +86,31 @@ export class SettingsTab extends PluginSettingTab {
 			})
 
 		new Setting(containerEl)
+			.setName('Google API Key')
+			.setDesc(
+				createFragment((el) => {
+					el.appendText(
+						"Required for PDFs and images. Canvas files work without a key. The free tier has a daily request cap, so a large vault may take several hours or a couple of days to fully process on first run — that's normal. ",
+					)
+					el.createEl('a', {
+						href: 'https://aistudio.google.com/app/apikey',
+						text: 'Get your API key here',
+						cls: 'external-link',
+					})
+					el.appendText('.')
+				}),
+			)
+			.addText((text) => {
+				text.inputEl.type = 'password'
+				text
+					.setPlaceholder('Enter your Google API key')
+					.setValue(this.settingsService.googleApiKey)
+					.onChange(async (value) => {
+						await this.settingsService.updateGoogleApiKey(value)
+					})
+			})
+
+		new Setting(containerEl)
 			.setName('Gemini Prompt')
 			.setDesc('The instruction sent to Gemini for all PDF and image files. Changing this takes effect on the next conversion run.')
 			.addTextArea((text) => {
@@ -141,6 +121,26 @@ export class SettingsTab extends PluginSettingTab {
 						await this.settingsService.updatePrompt(value)
 					})
 			})
+
+		new Setting(containerEl)
+			.setName('Run on start')
+			.setDesc('Automatically transcribe new or changed files when Obsidian loads.')
+			.addToggle((toggle) =>
+				toggle.setValue(this.settingsService.runOnStart).onChange(async (value) => {
+					await this.settingsService.updateRunOnStart(value)
+				}),
+			)
+
+		new Setting(containerEl)
+			.setName('Run on start (Mobile)')
+			.setDesc(
+				'Same as above, but for mobile. Disabled by default — enable only after the initial transcription is done, as large vaults can take a while and may cause Obsidian to restart on mobile.',
+			)
+			.addToggle((toggle) =>
+				toggle.setValue(this.settingsService.runOnStartMobile).onChange(async (value) => {
+					await this.settingsService.updateRunOnStartMobile(value)
+				}),
+			)
 
 		// Add Restore Defaults button
 		new Setting(containerEl)

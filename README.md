@@ -40,7 +40,7 @@ The `**` wildcard matches any number of nested folders, while `*` matches within
 
 **Recommended setup:** configure Obsidian's attachment folder to `attachments/` (Settings → Files & Links → Default location for new attachments → "In the folder specified below"), then set the file filter to `**/attachments/*.{canvas,pdf,png,jpg,jpeg}`. Every file you attach to any note gets transcribed automatically.
 
-## Index folder (where transcripts are saved)
+## Transcripts folder (where transcripts are saved)
 
 By default, transcripts are placed in the same folder as the source file (`./`). You can also use a relative path to go up a level, or an absolute folder name to collect everything in one place.
 

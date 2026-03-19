@@ -34,7 +34,7 @@ function groupByFolder(files: FileStatus[]): { folder: string; files: FileStatus
 
 export function renderStatusContent(files: FileStatus[]): string {
 	if (files.length === 0) {
-		return '<p class="indexer-empty">No files tracked yet. Run the converter to see status.</p>'
+		return '<p class="attachmate-empty">No files tracked yet. Run the converter to see status.</p>'
 	}
 
 	const grouped = new Map<ConversionStatus, FileStatus[]>()
@@ -49,9 +49,9 @@ export function renderStatusContent(files: FileStatus[]): string {
 		if (group.length === 0) continue
 
 		const spinner =
-			status === 'processing' && isProcessing ? '<span class="indexer-spinner"></span>' : ''
+			status === 'processing' && isProcessing ? '<span class="attachmate-spinner"></span>' : ''
 
-		rows += `<tr class="indexer-section-header">
+		rows += `<tr class="attachmate-section-header">
             <td colspan="2">${SECTION_LABELS[status]} (${group.length})${spinner}</td>
         </tr>`
 
@@ -59,23 +59,23 @@ export function renderStatusContent(files: FileStatus[]): string {
 			folderFiles.forEach((file, i) => {
 				const { name } = splitPath(file.path)
 				const errorMsg = file.errorMessage
-					? `<span class="indexer-error-msg">${file.errorMessage}</span>`
+					? `<span class="attachmate-error-msg">${file.errorMessage}</span>`
 					: ''
 				if (i === 0) {
 					rows += `<tr>
-                        <td class="indexer-folder" rowspan="${folderFiles.length}">
-                            <div class="indexer-folder-sticky">${folder}</div>
+                        <td class="attachmate-folder" rowspan="${folderFiles.length}">
+                            <div class="attachmate-folder-sticky">${folder}</div>
                         </td>
-                        <td class="indexer-filename">${name}${errorMsg}</td>
+                        <td class="attachmate-filename">${name}${errorMsg}</td>
                     </tr>`
 				} else {
-					rows += `<tr><td class="indexer-filename">${name}${errorMsg}</td></tr>`
+					rows += `<tr><td class="attachmate-filename">${name}${errorMsg}</td></tr>`
 				}
 			})
 		}
 	}
 
-	return `<div class="indexer-scroll-wrapper">
-        <table class="indexer-status-table"><tbody>${rows}</tbody></table>
+	return `<div class="attachmate-scroll-wrapper">
+        <table class="attachmate-status-table"><tbody>${rows}</tbody></table>
     </div>`
 }

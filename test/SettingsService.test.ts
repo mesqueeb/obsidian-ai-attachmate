@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import type { Plugin } from 'obsidian'
 import { DEFAULT_FILE_FILTER, DEFAULT_PROMPT, DEFAULT_TEMPLATE } from '../src/utils/constants'
 import { SettingsServiceImpl } from '../src/service/SettingsService'
 
@@ -65,25 +66,25 @@ describe('SettingsService', () => {
 		expect(service.fileFilter).toBe(DEFAULT_FILE_FILTER)
 	})
 
-	describe('updateIndexFolder', () => {
+	describe('updateTranscriptsFolder', () => {
 		it('accepts a 2-character value like "./"', async () => {
-			await service.updateIndexFolder('./')
-			expect(service.indexFolder).toBe('./')
+			await service.updateTranscriptsFolder('./')
+			expect(service.transcriptsFolder).toBe('./')
 		})
 
 		it('accepts a 3-character value like "../"', async () => {
-			await service.updateIndexFolder('../')
-			expect(service.indexFolder).toBe('../')
+			await service.updateTranscriptsFolder('../')
+			expect(service.transcriptsFolder).toBe('../')
 		})
 
-		it('falls back to "index" for a 1-character value', async () => {
-			await service.updateIndexFolder('x')
-			expect(service.indexFolder).toBe('index')
+		it('falls back to "transcripts" for a 1-character value', async () => {
+			await service.updateTranscriptsFolder('x')
+			expect(service.transcriptsFolder).toBe('transcripts')
 		})
 
-		it('falls back to "index" for an empty string', async () => {
-			await service.updateIndexFolder('')
-			expect(service.indexFolder).toBe('index')
+		it('falls back to "transcripts" for an empty string', async () => {
+			await service.updateTranscriptsFolder('')
+			expect(service.transcriptsFolder).toBe('transcripts')
 		})
 	})
 })

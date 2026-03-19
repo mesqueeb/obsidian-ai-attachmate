@@ -22,7 +22,7 @@ describe('Integration: ConversionStatusTracker wired into converters', () => {
 		const canvasService = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 		})
 		canvasService.setStatusTracker(tracker)
 		await createTestCanvasFile(fileDao, 'Test.canvas')
@@ -49,7 +49,7 @@ describe('Integration: ConversionStatusTracker wired into converters', () => {
 				throw new Error('Gemini rate limit')
 			},
 		}
-		const pngConverter = new PngConverterService(fileDao, 'index', throwingParser)
+		const pngConverter = new PngConverterService(fileDao, 'transcripts', throwingParser)
 		pngConverter.setStatusTracker(tracker)
 		await createTestImageFile(fileAdapter, 'test-image.png')
 
@@ -64,16 +64,16 @@ describe('Integration: ConversionStatusTracker wired into converters', () => {
 		const canvasService = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 		})
 		canvasService.setStatusTracker(tracker)
 		await createTestCanvasFile(fileDao, 'Test.canvas')
 
-		// First run creates the index file
+		// First run creates the transcript
 		await new Promise((resolve) => setTimeout(resolve, 3))
 		await canvasService.convertFiles()
 
-		// Second run — source is older than index, file is skipped
+		// Second run — source is older than transcript, file is skipped
 		await new Promise((resolve) => setTimeout(resolve, 3))
 		await canvasService.convertFiles()
 
@@ -85,7 +85,7 @@ describe('Integration: ConversionStatusTracker wired into converters', () => {
 		const canvasService = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 		})
 		canvasService.setStatusTracker(tracker)
 		await createTestCanvasFile(fileDao, 'Test.canvas')

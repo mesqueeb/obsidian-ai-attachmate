@@ -5,7 +5,7 @@ import { FatalProcessingError } from './AttachmentParserService'
 import { ConversionStatusTracker } from './ConversionStatusTracker'
 
 export type ConversionConfig = {
-	indexFolder: string
+	transcriptsFolder: string
 	sourceExtension: string
 	targetExtension: string
 	fileFilter?: string
@@ -23,14 +23,14 @@ export abstract class BaseConverterService {
 		this.tracker = tracker
 	}
 
-	private isRelativeIndexFolder(): boolean {
-		return this.config.indexFolder.startsWith('./') || this.config.indexFolder.startsWith('../')
+	private isRelativeTranscriptsFolder(): boolean {
+		return this.config.transcriptsFolder.startsWith('./') || this.config.transcriptsFolder.startsWith('../')
 	}
 
 	async convertFiles(): Promise<void> {
 		try {
-			if (!this.isRelativeIndexFolder()) {
-				await this.fileDao.createFolder(this.config.indexFolder)
+			if (!this.isRelativeTranscriptsFolder()) {
+				await this.fileDao.createFolder(this.config.transcriptsFolder)
 			}
 
 			const allFiles = await this.fileDao.getFiles()
@@ -77,21 +77,21 @@ export abstract class BaseConverterService {
 		const sourceDir = sourcePath.includes('/') ? sourcePath.split('/').slice(0, -1).join('/') : ''
 		const outputFilename =
 			sourceName.slice(0, -this.config.sourceExtension.length) + this.config.targetExtension
-		const indexFolder = this.config.indexFolder
+		const transcriptsFolder = this.config.transcriptsFolder
 
-		if (this.isRelativeIndexFolder()) {
-			const resolvedDir = this.resolveRelativeDir(sourceDir, indexFolder)
+		if (this.isRelativeTranscriptsFolder()) {
+			const resolvedDir = this.resolveRelativeDir(sourceDir, transcriptsFolder)
 			return resolvedDir ? `${resolvedDir}/${outputFilename}` : outputFilename
 		}
 
 		// Vault-root-relative: normalize leading/trailing slashes
-		const normalized = indexFolder.replace(/^\/+/, '').replace(/\/+$/, '')
+		const normalized = transcriptsFolder.replace(/^\/+/, '').replace(/\/+$/, '')
 		return normalized ? `${normalized}/${outputFilename}` : outputFilename
 	}
 
-	private resolveRelativeDir(sourceDir: string, indexFolder: string): string {
+	private resolveRelativeDir(sourceDir: string, transcriptsFolder: string): string {
 		const parts = sourceDir ? sourceDir.split('/') : []
-		let remaining = indexFolder
+		let remaining = transcriptsFolder
 
 		while (remaining.startsWith('../')) {
 			if (parts.length > 0) parts.pop()
@@ -105,14 +105,14 @@ export abstract class BaseConverterService {
 	}
 
 	private findConvertedFileCandidates(allFiles: File[], sourceFiles: File[]): File[] {
-		if (!this.isRelativeIndexFolder()) {
-			const normalized = this.config.indexFolder.replace(/^\/+/, '').replace(/\/+$/, '')
+		if (!this.isRelativeTranscriptsFolder()) {
+			const normalized = this.config.transcriptsFolder.replace(/^\/+/, '').replace(/\/+$/, '')
 			return allFiles.filter(
 				(f) => f.path.startsWith(`${normalized}/`) && f.path.endsWith(this.config.targetExtension),
 			)
 		}
 
-		// Relative indexFolder: derive output dirs from current source files.
+		// Relative transcriptsFolder: derive output dirs from current source files.
 		// When no sources remain (all deleted), fall back to scanning all files
 		// with the target extension — the content-marker check in deleteFile
 		// acts as the safety net against deleting user-created files.
@@ -258,7 +258,7 @@ export abstract class BaseConverterService {
 					: '') +
 				`Deleted files ${removedFiles.length}\n` +
 				(removedFiles.length > 0
-					? `  ${removedFiles.map((f) => `- ${f.replace(`${this.config.indexFolder}/`, '').replace(this.config.targetExtension, '')}`).join('\n  ')}\n`
+					? `  ${removedFiles.map((f) => `- ${f.replace(`${this.config.transcriptsFolder}/`, '').replace(this.config.targetExtension, '')}`).join('\n  ')}\n`
 					: ''),
 		)
 	}

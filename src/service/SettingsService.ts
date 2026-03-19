@@ -1,12 +1,12 @@
 import { Plugin } from 'obsidian'
 import { CanvasServiceConfig } from '../service/CanvasServiceConfig'
-import { DEFAULT_FILE_FILTER, DEFAULT_INDEX_FOLDER, DEFAULT_PROMPT, DEFAULT_TEMPLATE } from '../utils/constants'
+import { DEFAULT_FILE_FILTER, DEFAULT_TRANSCRIPTS_FOLDER, DEFAULT_PROMPT, DEFAULT_TEMPLATE } from '../utils/constants'
 import { AttachmentParserConfig } from './AttachmentParserService'
 
 export type Settings = {
 	runOnStart: boolean
 	runOnStartMobile: boolean
-	indexFolder: string
+	transcriptsFolder: string
 	googleApiKey: string
 	fileFilter: string
 	prompt: string
@@ -16,7 +16,7 @@ export type Settings = {
 export type SettingsService = CanvasServiceConfig & {
 	readonly runOnStart: boolean
 	readonly runOnStartMobile: boolean
-	readonly indexFolder: string
+	readonly transcriptsFolder: string
 	readonly googleApiKey: string
 	readonly canvasPostfix: string
 	readonly fileFilter: string
@@ -26,7 +26,7 @@ export type SettingsService = CanvasServiceConfig & {
 
 	updateRunOnStart(value: boolean): Promise<void>
 	updateRunOnStartMobile(value: boolean): Promise<void>
-	updateIndexFolder(value: string): Promise<void>
+	updateTranscriptsFolder(value: string): Promise<void>
 	updateGoogleApiKey(value: string): Promise<void>
 	updateFileFilter(value: string): Promise<void>
 	updatePrompt(value: string): Promise<void>
@@ -53,8 +53,8 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 		return this.settings.runOnStartMobile
 	}
 
-	get indexFolder(): string {
-		return this.settings.indexFolder
+	get transcriptsFolder(): string {
+		return this.settings.transcriptsFolder
 	}
 
 	get googleApiKey(): string {
@@ -91,8 +91,8 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 		await this.saveSettings()
 	}
 
-	async updateIndexFolder(value: string): Promise<void> {
-		this.settings.indexFolder = value.length < 2 ? 'index' : value
+	async updateTranscriptsFolder(value: string): Promise<void> {
+		this.settings.transcriptsFolder = value.length < 2 ? 'transcripts' : value
 		await this.saveSettings()
 	}
 
@@ -125,7 +125,7 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 		return {
 			runOnStart: true,
 			runOnStartMobile: false, // Default to false for mobile for safety
-			indexFolder: DEFAULT_INDEX_FOLDER,
+			transcriptsFolder: DEFAULT_TRANSCRIPTS_FOLDER,
 			googleApiKey: '',
 			fileFilter: DEFAULT_FILE_FILTER,
 			prompt: DEFAULT_PROMPT,

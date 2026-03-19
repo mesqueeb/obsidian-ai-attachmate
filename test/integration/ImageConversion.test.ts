@@ -10,7 +10,7 @@ import { createTestImageFile } from '../utils/testFileUtils'
 // Load environment variables from .env file
 config()
 
-describe('Integration Test: Image Indexer Conversion', () => {
+describe('Integration Test: Image Conversion', () => {
 	const TEST_TIMEOUT = 30000
 	let fileAdapter: InMemoryFileAdapter
 	let fileDao: FileDaoImpl
@@ -30,7 +30,7 @@ describe('Integration Test: Image Indexer Conversion', () => {
 			'image/png',
 			(): string => 'Parse text from the image. Return full text and also give me description of the image',
 		)
-		pngConverter = new PngConverterService(fileDao, 'index', imageParser)
+		pngConverter = new PngConverterService(fileDao, 'transcripts', imageParser)
 
 		// Clear dao to ensure a clean state
 		fileAdapter.clear()
@@ -51,16 +51,16 @@ describe('Integration Test: Image Indexer Conversion', () => {
 	}
 
 	it(
-		'should create an image file, run the indexer, and verify the .png.md file',
+		'should create an image file, run the converter, and verify the .png.md file',
 		async () => {
 			// Step 1: Create a test image file using the FileAdapter
 			await createImageFile('test-image.png')
 
-			// Step 2: Run the indexer
+			// Step 2: Run the converter
 			await pngConverter.convertFiles()
 
 			// Step 3: Verify that the .md file is created and contains expected structure
-			const expectedMdPath = 'index/test-image.png.md'
+			const expectedMdPath = 'transcripts/test-image.png.md'
 			const convertedContent = await fileAdapter.read(expectedMdPath)
 			verifyMarkdownStructure(convertedContent, 'test-image.png')
 		},
@@ -75,8 +75,8 @@ describe('Integration Test: Image Indexer Conversion', () => {
 			await pngConverter.convertFiles()
 
 			const files = [
-				{ path: 'index/test-image.png.md', name: 'test-image.png' },
-				{ path: 'index/test-image2.png.md', name: 'test-image2.png' },
+				{ path: 'transcripts/test-image.png.md', name: 'test-image.png' },
+				{ path: 'transcripts/test-image2.png.md', name: 'test-image2.png' },
 			]
 
 			for (const file of files) {
@@ -97,7 +97,7 @@ describe('Integration Test: Image Indexer Conversion', () => {
 			await createImageFile('test-image2.png')
 			await pngConverter.convertFiles()
 
-			const expectedMdPath = 'index/test-image2.png.md'
+			const expectedMdPath = 'transcripts/test-image2.png.md'
 			const convertedContent = await fileAdapter.read(expectedMdPath)
 			verifyMarkdownStructure(convertedContent, 'test-image2.png')
 		},
@@ -110,7 +110,7 @@ describe('Integration Test: Image Indexer Conversion', () => {
 			await createImageFile('test-image.png')
 			await pngConverter.convertFiles()
 
-			const mdPath = 'index/test-image.png.md'
+			const mdPath = 'transcripts/test-image.png.md'
 			expect(await fileAdapter.read(mdPath)).toBeDefined()
 
 			await fileAdapter.delete('test-image.png')

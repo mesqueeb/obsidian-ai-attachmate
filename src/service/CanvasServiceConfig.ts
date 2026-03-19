@@ -1,5 +1,5 @@
 export type CanvasServiceConfig = {
-	readonly indexFolder: string
+	readonly transcriptsFolder: string
 	readonly canvasPostfix: string
 	readonly runOnStart: boolean
 	readonly fileFilter?: string

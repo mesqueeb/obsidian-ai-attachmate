@@ -62,7 +62,7 @@ describe('renderStatusContent', () => {
 		const html = renderStatusContent(files)
 		expect(html).toContain('rowspan="3"')
 		// folder cell appears only once
-		const folderCount = (html.match(/indexer-folder-sticky/g) || []).length
+		const folderCount = (html.match(/attachmate-folder-sticky/g) || []).length
 		expect(folderCount).toBe(1)
 	})
 
@@ -74,19 +74,19 @@ describe('renderStatusContent', () => {
 		const html = renderStatusContent(files)
 		expect(html).toContain('folder-a')
 		expect(html).toContain('folder-b')
-		const folderCount = (html.match(/indexer-folder-sticky/g) || []).length
+		const folderCount = (html.match(/attachmate-folder-sticky/g) || []).length
 		expect(folderCount).toBe(2)
 	})
 
 	it('shows spinner element when files are processing', () => {
 		const files: FileStatus[] = [{ path: 'a.pdf', status: 'processing' }]
 		const html = renderStatusContent(files)
-		expect(html).toContain('<span class="indexer-spinner">')
+		expect(html).toContain('<span class="attachmate-spinner">')
 	})
 
 	it('does not show spinner element when no files are processing', () => {
 		const files: FileStatus[] = [{ path: 'a.pdf', status: 'done' }]
 		const html = renderStatusContent(files)
-		expect(html).not.toContain('<span class="indexer-spinner">')
+		expect(html).not.toContain('<span class="attachmate-spinner">')
 	})
 })

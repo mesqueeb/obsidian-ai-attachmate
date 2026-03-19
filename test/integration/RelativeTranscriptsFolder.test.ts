@@ -6,7 +6,7 @@ import { readTestFile } from '../utils/testFileUtils'
 
 const CANVAS_CONTENT = readTestFile('Test.canvas')
 
-describe('Integration Test: Relative Index Folder', () => {
+describe('Integration Test: Relative Transcripts Folder', () => {
 	let fileAdapter: InMemoryFileAdapter
 	let fileDao: FileDaoImpl
 
@@ -21,7 +21,7 @@ describe('Integration Test: Relative Index Folder', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: '../',
+			transcriptsFolder: '../',
 		})
 		await service.convertFiles()
 
@@ -34,7 +34,7 @@ describe('Integration Test: Relative Index Folder', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: './index',
+			transcriptsFolder: './index',
 		})
 		await service.convertFiles()
 
@@ -47,7 +47,7 @@ describe('Integration Test: Relative Index Folder', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: '../',
+			transcriptsFolder: '../',
 		})
 		await service.convertFiles()
 
@@ -60,7 +60,7 @@ describe('Integration Test: Relative Index Folder', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: '../',
+			transcriptsFolder: '../',
 		})
 		await service.convertFiles()
 
@@ -73,28 +73,28 @@ describe('Integration Test: Relative Index Folder', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: 'index',
+			transcriptsFolder: 'transcripts',
 		})
 		await service.convertFiles()
 
-		expect(await fileAdapter.read('index/Test.canvas.md')).toBeDefined()
+		expect(await fileAdapter.read('transcripts/Test.canvas.md')).toBeDefined()
 	})
 
 	it('slash normalization: "/index", "index", "index/" all produce index/file.canvas.md', async () => {
-		for (const indexFolder of ['/index', 'index', 'index/']) {
+		for (const transcriptsFolder of ['/index', 'index', 'index/']) {
 			fileAdapter.clear()
 			await fileDao.createOrUpdateFile('Test.canvas', CANVAS_CONTENT)
 
 			const service = new CanvasService(fileDao, {
 				canvasPostfix: '.canvas.md',
 				runOnStart: false,
-				indexFolder,
+				transcriptsFolder,
 			})
 			await service.convertFiles()
 
 			expect(
 				await fileAdapter.read('index/Test.canvas.md'),
-				`indexFolder="${indexFolder}"`,
+				`transcriptsFolder="${transcriptsFolder}"`,
 			).toBeDefined()
 		}
 	})
@@ -105,7 +105,7 @@ describe('Integration Test: Relative Index Folder', () => {
 		const service = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',
 			runOnStart: false,
-			indexFolder: './',
+			transcriptsFolder: './',
 		})
 		await service.convertFiles()
 

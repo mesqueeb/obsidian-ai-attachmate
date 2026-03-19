@@ -10,7 +10,7 @@ export class CanvasService extends BaseConverterService {
 
 	constructor(fileDao: FileDao, config: CanvasServiceConfig, getTemplate: () => string = () => DEFAULT_TEMPLATE) {
 		super(fileDao, {
-			indexFolder: config.indexFolder,
+			transcriptsFolder: config.transcriptsFolder,
 			sourceExtension: '.canvas',
 			targetExtension: config.canvasPostfix,
 			fileFilter: config.fileFilter,

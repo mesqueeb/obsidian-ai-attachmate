@@ -1,16 +1,16 @@
-.indexer-scroll-wrapper {
+.attachmate-scroll-wrapper {
     height: 100%;
     overflow-y: auto;
     overflow-x: clip;
 }
 
-.indexer-status-table {
+.attachmate-status-table {
     width: 100%;
     border-collapse: collapse;
     --status-row-height: 40px;
 }
 
-.indexer-status-table tr.indexer-section-header td {
+.attachmate-status-table tr.attachmate-section-header td {
     height: var(--status-row-height);
     position: sticky;
     top: 0;
@@ -23,20 +23,20 @@
     border-top: 1px solid var(--background-modifier-border);
 }
 
-.indexer-status-table tr.indexer-section-header:first-child td {
+.attachmate-status-table tr.attachmate-section-header:first-child td {
     border-top: none;
 }
 
-.indexer-status-table tr:not(.indexer-section-header):hover td {
+.attachmate-status-table tr:not(.attachmate-section-header):hover td {
     background: var(--background-modifier-hover);
 }
 
-.indexer-status-table tr:not(.indexer-section-header) td {
+.attachmate-status-table tr:not(.attachmate-section-header) td {
     padding: 4px 12px;
     vertical-align: top;
 }
 
-.indexer-folder {
+.attachmate-folder {
     color: var(--text-muted);
     font-size: var(--font-ui-small);
     width: 50%;
@@ -44,40 +44,40 @@
     position: relative;
 }
 
-.indexer-folder-sticky {
+.attachmate-folder-sticky {
     position: sticky;
     top: calc(var(--status-row-height) + 4px);
 }
 
-.indexer-filename {
+.attachmate-filename {
     font-size: var(--font-ui-small);
     width: 50%;
 }
 
-.indexer-error-msg {
+.attachmate-error-msg {
     color: var(--text-error);
     font-size: var(--font-ui-small);
     display: block;
     margin-top: 2px;
 }
 
-.indexer-empty {
+.attachmate-empty {
     padding: 16px 12px;
     color: var(--text-muted);
 }
 
-@keyframes indexer-spin {
+@keyframes attachmate-spin {
     to { transform: rotate(360deg); }
 }
 
-.indexer-spinner {
+.attachmate-spinner {
     display: inline-block;
     width: 11px;
     height: 11px;
     border: 2px solid currentColor;
     border-top-color: transparent;
     border-radius: 50%;
-    animation: indexer-spin 0.7s linear infinite;
+    animation: attachmate-spin 0.7s linear infinite;
     margin-left: 6px;
     vertical-align: middle;
     opacity: 0.7;

@@ -66,6 +66,12 @@ The file cannot be processed due to Gemini API limitations.`
 		retryCount = 0,
 		fileSizeMB: number,
 	): Promise<string> {
+		// Check API key first
+		const apiKey = this.config.getApiKey()
+		if (!apiKey) {
+			throw new FatalProcessingError('No Google API key configured. Please add your Gemini API key in the plugin settings.')
+		}
+
 		// Check file size first
 		const sizeError = this.validateFileSize(fileSizeMB, filePath)
 		if (sizeError) {
@@ -74,7 +80,7 @@ The file cannot be processed due to Gemini API limitations.`
 
 		try {
 			const buffer = await getBuffer()
-			const genAI = new GoogleGenerativeAI(this.config.getApiKey())
+			const genAI = new GoogleGenerativeAI(apiKey)
 			const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
 			const base64Data = this.arrayBufferToBase64(buffer)

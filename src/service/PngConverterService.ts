@@ -7,13 +7,13 @@ import { BaseConverterService } from './BaseConverterService'
 export class PngConverterService extends BaseConverterService {
 	constructor(
 		fileDao: FileDao,
-		indexFolder: string,
+		transcriptsFolder: string,
 		private parser: AttachmentParserService,
 		fileFilter?: string,
 		private getTemplate: () => string = () => DEFAULT_TEMPLATE,
 	) {
 		super(fileDao, {
-			indexFolder,
+			transcriptsFolder,
 			sourceExtension: '.png',
 			targetExtension: '.png.md',
 			fileFilter,

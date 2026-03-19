@@ -2,7 +2,7 @@ import { ItemView, WorkspaceLeaf } from 'obsidian'
 import { ConversionStatusTracker } from '../service/ConversionStatusTracker'
 import { renderStatusContent } from './renderStatusContent'
 
-export const STATUS_VIEW_TYPE = 'attachments-indexer-status'
+export const STATUS_VIEW_TYPE = 'ai-attachmate-status'
 
 export class StatusView extends ItemView {
 	private tracker: ConversionStatusTracker
@@ -18,7 +18,7 @@ export class StatusView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Indexer Status'
+		return 'AI Attachmate Status'
 	}
 
 	getIcon(): string {

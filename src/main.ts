@@ -16,7 +16,7 @@ import { SettingsServiceImpl } from './service/SettingsService'
 import { SettingsTab } from './utils/SettingsTab'
 import { STATUS_VIEW_TYPE, StatusView } from './utils/StatusView'
 
-export default class ObsidianIndexer extends Plugin {
+export default class ObsidianAiAttachmate extends Plugin {
 	private isConverting = false
 
 	override async onload(): Promise<void> {
@@ -31,7 +31,7 @@ export default class ObsidianIndexer extends Plugin {
 		this.registerView(STATUS_VIEW_TYPE, (leaf) => new StatusView(leaf, statusTracker))
 
 		// Add ribbon button to open status view
-		this.addRibbonIcon('list-checks', 'Indexer Status', async () => {
+		this.addRibbonIcon('list-checks', 'AI Attachmate Status', async () => {
 			const existing = this.app.workspace.getLeavesOfType(STATUS_VIEW_TYPE)
 			if (existing.length > 0) {
 				this.app.workspace.revealLeaf(existing[0])
@@ -57,10 +57,10 @@ export default class ObsidianIndexer extends Plugin {
 		const jpegParser = new GeminiAttachmentParserService(settingsService, 'image/jpeg', getPrompt)
 
 		// Create converters
-		const pdfConverter = new PdfConverterService(fileDao, settingsService.indexFolder, pdfParser, settingsService.fileFilter, getTemplate)
-		const pngConverter = new PngConverterService(fileDao, settingsService.indexFolder, pngParser, settingsService.fileFilter, getTemplate)
-		const jpgConverter = new JpgConverterService(fileDao, settingsService.indexFolder, jpgParser, settingsService.fileFilter, getTemplate)
-		const jpegConverter = new JpegConverterService(fileDao, settingsService.indexFolder, jpegParser, settingsService.fileFilter, getTemplate)
+		const pdfConverter = new PdfConverterService(fileDao, settingsService.transcriptsFolder, pdfParser, settingsService.fileFilter, getTemplate)
+		const pngConverter = new PngConverterService(fileDao, settingsService.transcriptsFolder, pngParser, settingsService.fileFilter, getTemplate)
+		const jpgConverter = new JpgConverterService(fileDao, settingsService.transcriptsFolder, jpgParser, settingsService.fileFilter, getTemplate)
+		const jpegConverter = new JpegConverterService(fileDao, settingsService.transcriptsFolder, jpegParser, settingsService.fileFilter, getTemplate)
 
 		// Wire status tracker into all converters
 		canvasService.setStatusTracker(statusTracker)
@@ -90,7 +90,7 @@ export default class ObsidianIndexer extends Plugin {
 			} catch (error) {
 				if (error instanceof FatalProcessingError) {
 					// Show error notification
-					new Notice('Processing stopped due to Gemini API errors. Please try again later.')
+					new Notice(error.message.includes('No Google API key') ? error.message : 'Processing stopped due to Gemini API errors. Please try again later.')
 					console.error('Conversion process stopped:', error.message)
 				} else {
 					// Handle other errors
@@ -127,6 +127,6 @@ export default class ObsidianIndexer extends Plugin {
 	}
 
 	override onunload(): void {
-		console.log('Obsidian Indexer plugin unloaded.')
+		console.log('AI Attachmate plugin unloaded.')
 	}
 }
