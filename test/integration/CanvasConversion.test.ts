@@ -76,7 +76,7 @@ describe('Integration Test: Canvas Conversion', () => {
 		// Step 1: Create a canvas file using the FileAdapter
 		await createCanvasFile('Test.canvas')
 
-		// Step 2: Run the converter (assuming CanvasService handles indexing)
+		// Step 2: Run the converter
 		await canvasService.convertFiles()
 
 		// Step 3: Verify that the .canvas.md file is created and contains expected content
@@ -229,14 +229,14 @@ describe('Integration Test: Canvas Conversion', () => {
 		expect(finalModifiedTime).toBe(initialModifiedTime)
 	})
 
-	it('should handle canvas files in subfolders and multiple indexing', async () => {
+	it('should handle canvas files in subfolders and multiple transcription runs', async () => {
 		// Create canvas file in sub folder
 		await createCanvasFile('sub folder/Test.canvas')
 
 		// Add small delay to ensure any modification would show a time difference
 		await new Promise((resolve) => setTimeout(resolve, 3))
 
-		// First indexing
+		// First transcription run
 		await canvasService.convertFiles()
 
 		// Verify initial conversion uses subfolder path in embed and file link
@@ -255,7 +255,7 @@ describe('Integration Test: Canvas Conversion', () => {
 		// Add small delay to ensure any modification would show a time difference
 		await new Promise((resolve) => setTimeout(resolve, 3))
 
-		// Second indexing
+		// Second transcription run
 		await canvasService.convertFiles()
 
 		// Verify content remains consistent and modification time unchanged
@@ -272,7 +272,7 @@ describe('Integration Test: Canvas Conversion', () => {
 		const updatedContent = readTestFile('Test-single.canvas')
 		await fileDao.createOrUpdateFile('sub folder/Test.canvas', updatedContent)
 
-		// Third indexing
+		// Third transcription run
 		await canvasService.convertFiles()
 
 		// Verify updated content reflects updated canvas (Medias only now)
@@ -286,7 +286,7 @@ describe('Integration Test: Canvas Conversion', () => {
 		// Delete canvas file using adapter directly
 		await fileAdapter.delete('sub folder/Test.canvas')
 
-		// Fourth indexing
+		// Fourth transcription run
 		await canvasService.convertFiles()
 
 		// Verify markdown file was removed

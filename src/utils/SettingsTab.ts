@@ -19,6 +19,23 @@ export class SettingsTab extends PluginSettingTab {
 			text: 'AI Attachmate watches your vault and transcribes PDFs, images, and Canvas files into Markdown — automatically. Each transcript includes a section at the top where you can add your own notes, and those notes are preserved even when the file is re-transcribed.',
 		})
 
+		// Support development
+		new Setting(containerEl)
+			.setName('Support development')
+			.setDesc(
+				'If you love using AI Attachmate, please consider supporting its continued development.',
+			)
+			.addButton((button) =>
+				button.setButtonText('💜 Sponsor').onClick(() => {
+					window.open('https://github.com/sponsors/mesqueeb', '_blank')
+				}),
+			)
+			.addButton((button) =>
+				button.setButtonText('☕ Buy me a coffee').onClick(() => {
+					window.open('https://buymeacoffee.com/mesqueeb', '_blank')
+				}),
+			)
+
 		new Setting(containerEl)
 			.setName('File filter')
 			.setDesc(
@@ -52,7 +69,7 @@ export class SettingsTab extends PluginSettingTab {
 					)
 					el.createEl('code', { text: 'transcripts' })
 					el.appendText(
-						' to collect them all in one place. If you change this setting, delete the old folder and re-run the transcription.',
+						' to collect them all in one place. If you change this setting, delete the old folder and re-transcribe.',
 					)
 				}),
 			)
@@ -66,23 +83,23 @@ export class SettingsTab extends PluginSettingTab {
 			)
 
 		new Setting(containerEl)
-			.setName('Output Template')
+			.setName('Output template')
 			.setDesc(
 				createFragment((el) => {
-					el.appendText('The header of every generated transcript file. Use ')
+					el.appendText('The header of every generated transcript. Use ')
 					el.createEl('code', { text: '{{filename}}' })
 					el.appendText(' and ')
 					el.createEl('code', { text: '{{path}}' })
-					el.appendText(' as placeholders. The marker and transcript section are always appended automatically.')
+					el.appendText(
+						' as placeholders. The marker and transcript section are always appended automatically.',
+					)
 				}),
 			)
 			.addTextArea((text) => {
 				text.inputEl.rows = 10
-				text
-					.setValue(this.settingsService.template)
-					.onChange(async (value) => {
-						await this.settingsService.updateTemplate(value)
-					})
+				text.setValue(this.settingsService.template).onChange(async (value) => {
+					await this.settingsService.updateTemplate(value)
+				})
 			})
 
 		new Setting(containerEl)
@@ -90,7 +107,7 @@ export class SettingsTab extends PluginSettingTab {
 			.setDesc(
 				createFragment((el) => {
 					el.appendText(
-						"Required for PDFs and images. Canvas files work without a key. The free tier has a daily request cap, so a large vault may take several hours or a couple of days to fully process on first run — that's normal. ",
+						"Required for PDFs and images. Canvas files work without a key. The free tier has a daily request cap, so a large vault may take several hours or a couple of days to fully transcribe on first run — that's normal. ",
 					)
 					el.createEl('a', {
 						href: 'https://aistudio.google.com/app/apikey',
@@ -112,14 +129,14 @@ export class SettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Gemini Prompt')
-			.setDesc('The instruction sent to Gemini for all PDF and image files. Changing this takes effect on the next conversion run.')
+			.setDesc(
+				'The instruction sent to Gemini for all PDF and image attachments. Changing this takes effect on the next transcription run.',
+			)
 			.addTextArea((text) => {
 				text.inputEl.rows = 8
-				text
-					.setValue(this.settingsService.prompt)
-					.onChange(async (value) => {
-						await this.settingsService.updatePrompt(value)
-					})
+				text.setValue(this.settingsService.prompt).onChange(async (value) => {
+					await this.settingsService.updatePrompt(value)
+				})
 			})
 
 		new Setting(containerEl)

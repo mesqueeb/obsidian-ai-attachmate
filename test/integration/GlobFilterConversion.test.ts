@@ -74,7 +74,7 @@ describe('Integration Test: Glob Filter', () => {
 		await expect(fileAdapter.read('transcripts/image.canvas.md')).rejects.toThrow()
 	})
 
-	it('no fileFilter set — all canvas files anywhere in vault are processed (no regression)', async () => {
+	it('no fileFilter set — all canvas files anywhere in vault are transcribed (no regression)', async () => {
 		await fileDao.createOrUpdateFile('root.canvas', CANVAS_CONTENT)
 		await fileDao.createOrUpdateFile('deep/nested/file.canvas', CANVAS_CONTENT)
 

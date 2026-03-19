@@ -6,17 +6,17 @@ Once set up, it runs in the background: attach a file, get a Markdown transcript
 
 ## Features
 
-- **Automatic transcription** — PDFs, images (`.png`, `.jpg`, `.jpeg`), and Canvas files (`.canvas`) are converted to Markdown as soon as they appear in your vault
-- **Your notes are safe** — each transcript has a section at the top for your own notes; they're preserved across re-transcriptions
-- **Custom AI prompt** — configure the prompt used for each file type so the output fits your workflow
-- **Custom template** — control how the generated Markdown file is structured
-- **File filter** — use glob patterns to include only specific files or folders
-- **Flexible output location** — set an absolute folder or a relative path (e.g. `./` puts the transcript right next to the original)
-- **Status view** — see which files are currently being processed via the sidebar panel
+- **Automatic transcription** — PDFs, images (`.png`, `.jpg`, `.jpeg`), and Canvas files (`.canvas`) are transcribed to Markdown as soon as they appear in your vault
+- **Your notes are safe** — each transcript has a user zone at the top for your own notes; they're preserved across re-transcriptions
+- **Custom AI prompt** — configure the Gemini prompt used for each attachment so the output fits your workflow
+- **Output template** — control how every generated transcript is structured
+- **File filter** — use glob patterns to include only specific attachments or folders
+- **Flexible transcripts folder** — set an absolute folder or a relative path (e.g. `./` puts the transcript right next to the attachment)
+- **Status view** — see which attachments are currently being transcribed via the sidebar panel
 - **Orphan cleanup** — when you delete an attachment, its transcript is removed too
-- **Canvas support without an API key** — Canvas files are converted locally, no AI needed
+- **Canvas support without an API key** — Canvas files are transcribed locally, no AI needed
 
-## Google Gemini API Key
+## Google Gemini API key
 
 PDFs and images are processed by Google Gemini. [Get your API key here](https://aistudio.google.com/app/apikey) — the free tier works fine. Canvas files work without a key.
 
@@ -71,6 +71,12 @@ npm run build-and-install -- /path/to/your/obsidian/vault
 ```
 
 Then reload the plugin in Obsidian (Settings → Community plugins → AI Attachmate → toggle off and on).
+
+## Support development
+
+If you love using AI Attachmate, please consider supporting its continued development.
+
+[![💜 Sponsor](https://img.shields.io/badge/💜_Sponsor-GitHub-informational?style=flat)](https://github.com/sponsors/mesqueeb) [![☕ Buy me a coffee](https://img.shields.io/badge/☕_Buy_me_a_coffee-buymeacoffee.com-yellow?style=flat)](https://buymeacoffee.com/mesqueeb)
 
 ## License
 

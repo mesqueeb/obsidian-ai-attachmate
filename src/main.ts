@@ -86,15 +86,15 @@ export default class ObsidianAiAttachmate extends Plugin {
 				await jpegConverter.convertFiles()
 
 				// Show success notification
-				new Notice('All attachments have been processed successfully')
+				new Notice('All attachments transcribed successfully')
 			} catch (error) {
 				if (error instanceof FatalProcessingError) {
 					// Show error notification
-					new Notice(error.message.includes('No Google API key') ? error.message : 'Processing stopped due to Gemini API errors. Please try again later.')
-					console.error('Conversion process stopped:', error.message)
+					new Notice(error.message.includes('No Google API key') ? error.message : 'Transcription stopped due to Gemini API errors. Please try again later.')
+					console.error('Transcription stopped:', error.message)
 				} else {
 					// Handle other errors
-					new Notice('An error occurred during processing')
+					new Notice('An error occurred during transcription')
 					console.error('Conversion error:', error)
 				}
 			} finally {
@@ -108,7 +108,7 @@ export default class ObsidianAiAttachmate extends Plugin {
 		// Add command for manual conversion
 		this.addCommand({
 			id: 'convert-canvas-files',
-			name: 'Convert attachment files to Markdown',
+			name: 'Transcribe attachments to Markdown',
 			callback: async () => {
 				await runConversion()
 			},

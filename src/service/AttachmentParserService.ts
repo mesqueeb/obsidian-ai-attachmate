@@ -47,14 +47,14 @@ export class GeminiAttachmentParserService implements AttachmentParserService {
 		if (fileSizeMB > this.MAX_FILE_SIZE_MB) {
 			const message = `## File Too Large
 
-This file exceeds the maximum size limit for Gemini AI processing.
+This attachment exceeds the maximum size for Gemini transcription.
 
 **Details:**
 - File size: ${fileSizeMB.toFixed(2)}MB
 - Maximum allowed: ${this.MAX_FILE_SIZE_MB}MB
 - File: ${filePath}
 
-The file cannot be processed due to Gemini API limitations.`
+This attachment cannot be transcribed due to Gemini API limitations.`
 			return message
 		}
 		return null
@@ -97,10 +97,10 @@ The file cannot be processed due to Gemini API limitations.`
 		} catch (error) {
 			// If it's a 400 error (Bad Request), return formatted error message
 			if (error instanceof Error && error.message.includes('400')) {
-				console.warn(`⚠️ Processing Error\nFile: ${filePath}\nSize: ${fileSizeMB}MB`)
-				return `## Processing Error
+				console.warn(`⚠️ Transcription Error\nFile: ${filePath}\nSize: ${fileSizeMB}MB`)
+				return `## Transcription Error
 
-This file could not be processed by Gemini AI.
+This attachment could not be transcribed by Gemini AI.
 
 **Details:**
 - File size: ${fileSizeMB}MB
