@@ -17,7 +17,7 @@ describe('Integration Test: Image Indexer Conversion', () => {
 	let pngConverter: PngConverterService
 	let createImageFile: (filename: string) => Promise<void>
 
-	beforeEach(() => {
+	beforeEach((): void => {
 		const apiKey = process.env.GOOGLE_API_KEY
 		if (!apiKey) {
 			throw new Error('GOOGLE_API_KEY environment variable is required for tests')
@@ -26,7 +26,7 @@ describe('Integration Test: Image Indexer Conversion', () => {
 		fileAdapter = new InMemoryFileAdapter()
 		fileDao = new FileDaoImpl(fileAdapter)
 		const imageParser = new GeminiAttachmentParserService(
-			{ getApiKey: () => apiKey },
+			{ getApiKey: (): string => apiKey },
 			'image/png',
 			'Parse text from the image. Return full text and also give me description of the image',
 		)
@@ -36,10 +36,10 @@ describe('Integration Test: Image Indexer Conversion', () => {
 		fileAdapter.clear()
 
 		// Create partially applied function with adapter instead of fileDao
-		createImageFile = (filename: string) => createTestImageFile(fileAdapter, filename)
+		createImageFile = (filename: string): Promise<void> => createTestImageFile(fileAdapter, filename)
 	})
 
-	function verifyMarkdownStructure(content: string, imageName: string) {
+	function verifyMarkdownStructure(content: string, imageName: string): void {
 		expect(content).toContain('# Notes')
 		expect(content).toContain('# Content')
 		expect(content).toContain(`File: [${imageName}](${imageName})`)

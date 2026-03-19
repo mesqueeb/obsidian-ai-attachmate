@@ -1,9 +1,9 @@
 import { AdapterFile, FileAdapter } from '../../src/dao/FileAdapter'
 
 export class InMemoryFileAdapter implements FileAdapter {
-	private storage: Map<string, string> = new Map()
-	private modificationTimes: Map<string, number> = new Map()
-	private binaryStorage: Map<string, ArrayBuffer> = new Map()
+	private storage = new Map<string, string>()
+	private modificationTimes = new Map<string, number>()
+	private binaryStorage = new Map<string, ArrayBuffer>()
 
 	async createFolder(path: string): Promise<void> {
 		if (!path) {
@@ -37,7 +37,7 @@ export class InMemoryFileAdapter implements FileAdapter {
 				throw new Error(`File not found: ${path}`)
 			}
 			return content
-		} catch (e) {
+		} catch {
 			throw new Error(`Error reading file: ${path}`)
 		}
 	}
@@ -108,7 +108,7 @@ export class InMemoryFileAdapter implements FileAdapter {
 		return {
 			path,
 			name,
-			modifiedTime: this.modificationTimes.get(path)!,
+			modifiedTime: this.modificationTimes.get(path) ?? Date.now(),
 			sizeInBytes,
 		}
 	}

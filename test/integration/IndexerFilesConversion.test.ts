@@ -27,7 +27,7 @@ describe('Integration Test: Canvas Indexer Conversion', () => {
 		fileAdapter.clear()
 
 		// Create partially applied function
-		createCanvasFile = (filename: string) => createTestCanvasFile(fileDao, filename)
+		createCanvasFile = (filename: string): Promise<void> => createTestCanvasFile(fileDao, filename)
 	})
 
 	it('preserves user notes above the marker when source canvas is updated', async () => {

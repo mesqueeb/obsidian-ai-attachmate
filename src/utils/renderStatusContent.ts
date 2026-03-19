@@ -1,7 +1,7 @@
 import { ConversionStatus, FileStatus } from '../service/ConversionStatusTracker'
 
 const SECTION_ORDER: ConversionStatus[] = ['error', 'processing', 'pending', 'done']
-const SECTION_LABELS: Record<ConversionStatus, string> = {
+const SECTION_LABELS = {
 	error: 'Error',
 	processing: 'Processing',
 	pending: 'Pending',
@@ -26,9 +26,10 @@ function groupByFolder(files: FileStatus[]): { folder: string; files: FileStatus
 			order.push(folder)
 			map.set(folder, [])
 		}
-		map.get(folder)!.push(file)
+		const folderArr = map.get(folder)
+		if (folderArr) folderArr.push(file)
 	}
-	return order.map((folder) => ({ folder, files: map.get(folder)! }))
+	return order.map((folder) => ({ folder, files: map.get(folder) ?? [] }))
 }
 
 export function renderStatusContent(files: FileStatus[]): string {
@@ -44,7 +45,7 @@ export function renderStatusContent(files: FileStatus[]): string {
 
 	let rows = ''
 	for (const status of SECTION_ORDER) {
-		const group = grouped.get(status)!
+		const group = grouped.get(status) ?? []
 		if (group.length === 0) continue
 
 		const spinner =

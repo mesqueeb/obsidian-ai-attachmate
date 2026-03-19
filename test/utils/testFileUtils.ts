@@ -1,12 +1,13 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import { FileDao } from '../../src/dao/FileDao'
 import { InMemoryFileAdapter } from '../dao/InMemoryFileAdapter'
 
 export function readTestFile(testFileName: string): string {
 	return fs.readFileSync(path.resolve(__dirname, `../../test-data/${testFileName}`), 'utf-8')
 }
 
-export function createTestCanvasFile(fileDao: any, testFileName: string): Promise<void> {
+export function createTestCanvasFile(fileDao: FileDao, testFileName: string): Promise<void> {
 	const canvasFilePath = testFileName
 	const canvasContent = readTestFile(testFileName)
 	return fileDao.createOrUpdateFile(canvasFilePath, canvasContent)
@@ -16,7 +17,7 @@ export function generateTestCanvasFile(): string {
 	return readTestFile('Test.canvas')
 }
 
-export function readGeneratedTestFile(fileName: string, postfix: string = ''): string {
+export function readGeneratedTestFile(fileName: string, postfix = ''): string {
 	// Remove .md extension if present
 	const baseName = fileName.replace(postfix, '')
 
@@ -35,7 +36,7 @@ export function readTestBinaryFile(testFileName: string): ArrayBuffer {
 export function createTestImageFile(
 	adapter: InMemoryFileAdapter,
 	testFileName: string,
-	contentFileName: string = testFileName,
+	contentFileName = testFileName,
 ): Promise<void> {
 	const imageFilePath = testFileName
 	const imageContent = readTestBinaryFile(contentFileName)

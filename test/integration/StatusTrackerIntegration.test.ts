@@ -7,11 +7,6 @@ import { PngConverterService } from '../../src/service/PngConverterService'
 import { InMemoryFileAdapter } from '../dao/InMemoryFileAdapter'
 import { createTestCanvasFile, createTestImageFile } from '../utils/testFileUtils'
 
-const mockParser: AttachmentParserService = {
-	validateApiKey: () => true,
-	parseAttachmentContent: async () => 'Mock transcript',
-}
-
 describe('Integration: ConversionStatusTracker wired into converters', () => {
 	let fileAdapter: InMemoryFileAdapter
 	let fileDao: FileDaoImpl

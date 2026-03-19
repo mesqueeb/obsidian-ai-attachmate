@@ -8,7 +8,7 @@ export class FileDaoImpl implements FileDao {
 	async readFile(path: string): Promise<string | undefined> {
 		try {
 			return await this.fileAdapter.read(path)
-		} catch (e) {
+		} catch {
 			return undefined
 		}
 	}
@@ -26,7 +26,7 @@ export class FileDaoImpl implements FileDao {
 		try {
 			// First try to modify existing file
 			await this.fileAdapter.modify(path, content)
-		} catch (e) {
+		} catch {
 			// If modify fails, try to create new file
 			try {
 				await this.fileAdapter.create(path, content)

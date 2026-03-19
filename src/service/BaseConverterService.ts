@@ -73,7 +73,7 @@ export abstract class BaseConverterService {
 	}
 
 	protected getConvertedFilePath(sourcePath: string): string {
-		const sourceName = sourcePath.split('/').pop()!
+		const sourceName = sourcePath.split('/').at(-1) ?? sourcePath
 		const sourceDir = sourcePath.includes('/') ? sourcePath.split('/').slice(0, -1).join('/') : ''
 		const outputFilename =
 			sourceName.slice(0, -this.config.sourceExtension.length) + this.config.targetExtension

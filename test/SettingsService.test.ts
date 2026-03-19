@@ -1,15 +1,11 @@
-import { Plugin } from 'obsidian'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { SettingsServiceImpl } from '../src/service/SettingsService'
 
 function makePlugin(): Plugin {
-	const plugin = new Plugin() as Plugin & {
-		loadData: () => Promise<unknown>
-		saveData: (data: unknown) => Promise<void>
-	}
-	plugin.loadData = async () => ({})
-	plugin.saveData = async () => {}
-	return plugin
+	return {
+		loadData: async (): Promise<unknown> => ({}),
+		saveData: async (): Promise<void> => { /* no-op */ },
+	} as unknown as Plugin
 }
 
 describe('SettingsService', () => {

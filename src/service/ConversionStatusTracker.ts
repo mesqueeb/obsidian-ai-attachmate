@@ -7,8 +7,8 @@ export type FileStatus = {
 }
 
 export class ConversionStatusTracker {
-	private files: Map<string, FileStatus> = new Map()
-	private subscribers: Set<() => void> = new Set()
+	private files = new Map<string, FileStatus>()
+	private subscribers = new Set<() => void>()
 
 	initFiles(paths: string[]): void {
 		this.files.clear()

@@ -19,7 +19,7 @@ import { STATUS_VIEW_TYPE, StatusView } from './utils/StatusView'
 export default class ObsidianIndexer extends Plugin {
 	private isConverting = false
 
-	override async onload() {
+	override async onload(): Promise<void> {
 		// Initialize settings manager and load settings
 		const settingsService = new SettingsServiceImpl(this)
 		await settingsService.loadSettings()
@@ -111,7 +111,7 @@ export default class ObsidianIndexer extends Plugin {
 		jpegConverter.setStatusTracker(statusTracker)
 
 		// Initialize converters and other services
-		const runConversion = async () => {
+		const runConversion = async (): Promise<void> => {
 			if (this.isConverting) {
 				new Notice('Conversion is already in progress. Please wait.')
 				return
@@ -167,7 +167,7 @@ export default class ObsidianIndexer extends Plugin {
 		}
 	}
 
-	override onunload() {
+	override onunload(): void {
 		console.log('Obsidian Indexer plugin unloaded.')
 	}
 }

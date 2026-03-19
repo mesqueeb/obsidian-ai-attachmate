@@ -38,9 +38,7 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 		this.settings = this.getDefaultSettings()
 	}
 
-	get canvasPostfix(): string {
-		return '.canvas.md'
-	}
+	readonly canvasPostfix = '.canvas.md'
 
 	get runOnStart(): boolean {
 		return this.settings.runOnStart

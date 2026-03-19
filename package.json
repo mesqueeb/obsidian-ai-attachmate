@@ -3,6 +3,7 @@
 	"version": "3.0.0",
 	"description": "Transcribes your PDFs, images, and Canvas files into searchable Markdown notes using AI.",
 	"main": "main.js",
+	"type": "module",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
