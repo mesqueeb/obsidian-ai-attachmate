@@ -35,8 +35,10 @@ function groupByFolder(files: FileStatus[]): { folder: string; files: FileStatus
 /**
  * Renders the status content into the given container using Obsidian DOM APIs.
  *
- * Per the {@link https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines#Security Obsidian plugin guidelines},
- * `innerHTML` must never be used — DOM methods like `createEl()` and `createDiv()` are required instead.
+ * Per the
+ * {@link https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines#Security Obsidian plugin guidelines},
+ * `innerHTML` must never be used — DOM methods like `createEl()` and `createDiv()` are required
+ * instead.
  */
 export function renderStatusContent(container: HTMLElement, files: FileStatus[]): void {
 	if (files.length === 0) {
