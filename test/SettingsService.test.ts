@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { DEFAULT_FILE_FILTER, DEFAULT_PROMPT } from '../src/utils/constants'
 import { SettingsServiceImpl } from '../src/service/SettingsService'
 
 function makePlugin(): Plugin {
@@ -15,8 +16,25 @@ describe('SettingsService', () => {
 		service = new SettingsServiceImpl(makePlugin())
 	})
 
-	it('fileFilter defaults to **/*.{canvas,pdf,png,jpg,jpeg}', () => {
-		expect(service.fileFilter).toBe('**/*.{canvas,pdf,png,jpg,jpeg}')
+	it('prompt defaults to a non-empty string matching DEFAULT_PROMPT', () => {
+		expect(typeof DEFAULT_PROMPT).toBe('string')
+		expect(DEFAULT_PROMPT.length).toBeGreaterThan(0)
+		expect(service.prompt).toBe(DEFAULT_PROMPT)
+	})
+
+	it('updatePrompt persists the new value', async () => {
+		await service.updatePrompt('custom prompt')
+		expect(service.prompt).toBe('custom prompt')
+	})
+
+	it('restoreDefaults resets prompt to DEFAULT_PROMPT', async () => {
+		await service.updatePrompt('custom prompt')
+		await service.restoreDefaults()
+		expect(service.prompt).toBe(DEFAULT_PROMPT)
+	})
+
+	it('fileFilter defaults to DEFAULT_FILE_FILTER', () => {
+		expect(service.fileFilter).toBe(DEFAULT_FILE_FILTER)
 	})
 
 	it('updateFileFilter persists the new value', async () => {
@@ -24,10 +42,10 @@ describe('SettingsService', () => {
 		expect(service.fileFilter).toBe('custom/**/*.png')
 	})
 
-	it('restoreDefaults resets fileFilter to default', async () => {
+	it('restoreDefaults resets fileFilter to DEFAULT_FILE_FILTER', async () => {
 		await service.updateFileFilter('custom/**/*.png')
 		await service.restoreDefaults()
-		expect(service.fileFilter).toBe('**/*.{canvas,pdf,png,jpg,jpeg}')
+		expect(service.fileFilter).toBe(DEFAULT_FILE_FILTER)
 	})
 
 	describe('updateIndexFolder', () => {

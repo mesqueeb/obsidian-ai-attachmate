@@ -28,7 +28,7 @@ describe('Integration Test: Image Indexer Conversion', () => {
 		const imageParser = new GeminiAttachmentParserService(
 			{ getApiKey: (): string => apiKey },
 			'image/png',
-			'Parse text from the image. Return full text and also give me description of the image',
+			(): string => 'Parse text from the image. Return full text and also give me description of the image',
 		)
 		pngConverter = new PngConverterService(fileDao, 'index', imageParser)
 

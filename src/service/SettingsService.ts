@@ -1,8 +1,7 @@
 import { Plugin } from 'obsidian'
 import { CanvasServiceConfig } from '../service/CanvasServiceConfig'
+import { DEFAULT_FILE_FILTER, DEFAULT_INDEX_FOLDER, DEFAULT_PROMPT } from '../utils/constants'
 import { AttachmentParserConfig } from './AttachmentParserService'
-
-export const DEFAULT_FILE_FILTER = '**/*.{canvas,pdf,png,jpg,jpeg}'
 
 export type Settings = {
 	runOnStart: boolean
@@ -10,6 +9,7 @@ export type Settings = {
 	indexFolder: string
 	googleApiKey: string
 	fileFilter: string
+	prompt: string
 }
 
 export type SettingsService = CanvasServiceConfig & {
@@ -19,6 +19,7 @@ export type SettingsService = CanvasServiceConfig & {
 	readonly googleApiKey: string
 	readonly canvasPostfix: string
 	readonly fileFilter: string
+	readonly prompt: string
 	getApiKey(): string
 
 	updateRunOnStart(value: boolean): Promise<void>
@@ -26,6 +27,7 @@ export type SettingsService = CanvasServiceConfig & {
 	updateIndexFolder(value: string): Promise<void>
 	updateGoogleApiKey(value: string): Promise<void>
 	updateFileFilter(value: string): Promise<void>
+	updatePrompt(value: string): Promise<void>
 	restoreDefaults(): Promise<void>
 }
 
@@ -58,6 +60,10 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 
 	get fileFilter(): string {
 		return this.settings.fileFilter
+	}
+
+	get prompt(): string {
+		return this.settings.prompt
 	}
 
 	getApiKey(): string {
@@ -93,6 +99,11 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 		await this.saveSettings()
 	}
 
+	async updatePrompt(value: string): Promise<void> {
+		this.settings.prompt = value
+		await this.saveSettings()
+	}
+
 	async restoreDefaults(): Promise<void> {
 		this.settings = this.getDefaultSettings()
 		await this.saveSettings()
@@ -102,9 +113,10 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 		return {
 			runOnStart: true,
 			runOnStartMobile: false, // Default to false for mobile for safety
-			indexFolder: './',
+			indexFolder: DEFAULT_INDEX_FOLDER,
 			googleApiKey: '',
 			fileFilter: DEFAULT_FILE_FILTER,
+			prompt: DEFAULT_PROMPT,
 		}
 	}
 

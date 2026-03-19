@@ -110,6 +110,18 @@ export class SettingsTab extends PluginSettingTab {
 					})
 			})
 
+		new Setting(containerEl)
+			.setName('Gemini Prompt')
+			.setDesc('The instruction sent to Gemini for all PDF and image files. Changing this takes effect on the next conversion run.')
+			.addTextArea((text) => {
+				text.inputEl.rows = 8
+				text
+					.setValue(this.settingsService.prompt)
+					.onChange(async (value) => {
+						await this.settingsService.updatePrompt(value)
+					})
+			})
+
 		// Add Restore Defaults button
 		new Setting(containerEl)
 			.setName('Restore defaults')

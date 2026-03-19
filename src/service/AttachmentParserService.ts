@@ -24,7 +24,7 @@ export class GeminiAttachmentParserService implements AttachmentParserService {
 	constructor(
 		private config: AttachmentParserConfig,
 		private readonly mimeType: string,
-		private readonly prompt: string,
+		private readonly getPrompt: () => string,
 	) {
 		this.validateApiKey()
 	}
@@ -85,7 +85,7 @@ The file cannot be processed due to Gemini API limitations.`
 				},
 			}
 
-			const result = await model.generateContent([this.prompt, dataPart])
+			const result = await model.generateContent([this.getPrompt(), dataPart])
 			const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text || 'No content found'
 			return text.trim()
 		} catch (error) {

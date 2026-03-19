@@ -48,34 +48,12 @@ export default class ObsidianIndexer extends Plugin {
 		const canvasService = new CanvasService(fileDao, settingsService)
 
 		// Create parser instances with specific prompts for each type
-		const pdfParser = new GeminiAttachmentParserService(
-			settingsService,
-			'application/pdf',
-			`Transcribe the complete content of this PDF into well-structured markdown.
-- Use ## for top-level sections and ### for subsections, using the exact section titles from the document (e.g. "## 1. Introduction", "## Conclusion")
-- Never use bold text (**like this**) as a substitute for headings
-- Preserve all body text faithfully and in full
-- Render tables using markdown table syntax, always with a blank line before and after the table
-- For figures and images, write a brief italicised description on its own line`,
-		)
+		const getPrompt = (): string => settingsService.prompt
 
-		const pngParser = new GeminiAttachmentParserService(
-			settingsService,
-			'image/png',
-			'Extract and summarize the content of this image. Provide the complete text and a brief summary.',
-		)
-
-		const jpgParser = new GeminiAttachmentParserService(
-			settingsService,
-			'image/jpeg',
-			'Extract and summarize the content of this image. Provide the complete text and a brief summary.',
-		)
-
-		const jpegParser = new GeminiAttachmentParserService(
-			settingsService,
-			'image/jpeg',
-			'Extract and summarize the content of this image. Provide the complete text and a brief summary.',
-		)
+		const pdfParser = new GeminiAttachmentParserService(settingsService, 'application/pdf', getPrompt)
+		const pngParser = new GeminiAttachmentParserService(settingsService, 'image/png', getPrompt)
+		const jpgParser = new GeminiAttachmentParserService(settingsService, 'image/jpeg', getPrompt)
+		const jpegParser = new GeminiAttachmentParserService(settingsService, 'image/jpeg', getPrompt)
 
 		// Create converters
 		const pdfConverter = new PdfConverterService(
