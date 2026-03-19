@@ -13,11 +13,11 @@ Here's a setup that feels really natural:
 
 With this setup, any PDF you drop into an Obsidian note gets a full transcript right alongside it — automatically. The transcript includes a section at the top where you can write your own notes, and those notes are preserved even if the original file changes and the transcript is regenerated.
 
-![Plugin settings](./screenshots/settings.png)
+![Plugin settings](./assets/settings.png)
 
-![Generated transcript](./screenshots/transcript.png)
+![Generated transcript](./assets/transcript.png)
 
-![Status view](./screenshots/status-view.png)
+![Status view](./assets/status-view.png)
 
 ## Features
 
