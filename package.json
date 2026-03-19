@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-ai-attachmate",
-	"version": "3.0.0",
+	"version": "1.0.0",
 	"description": "Transcribes your PDFs, images, and Canvas files into searchable Markdown notes using AI.",
 	"main": "main.js",
 	"type": "module",
@@ -11,7 +11,8 @@
 		"test": "vitest run --watch=false --silent --reporter=verbose",
 		"prettier": "prettier --write \"src/**/*\" \"test/**/*\"",
 		"lint": "eslint \"src/**/*\" \"test/**/*\"",
-		"build-and-install": "node scripts/build-and-install.mjs"
+		"build-and-install": "node scripts/build-and-install.mjs",
+		"release": "node scripts/release.mjs"
 	},
 	"keywords": [],
 	"author": "",
