@@ -1,7 +1,7 @@
 {
 	"id": "ai-attachmate",
 	"name": "AI Attachmate",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"minAppVersion": "1.9.12",
 	"description": "Transcribes your PDFs, images, and Canvas files into searchable Markdown notes using AI. You control which files get transcribed, with what prompt, and where the transcription is saved. Bring your own key.",
 	"author": "mesqueeb — Luca Ban",
