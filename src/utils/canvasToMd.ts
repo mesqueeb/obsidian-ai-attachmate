@@ -42,7 +42,7 @@ export function convertCanvasToMd(content: string): string {
 		return ''
 	}
 
-	const json = parsedJson as CanvasJson
+	const json = parsedJson
 	const cards = getCards(json)
 	const notes = getNotes(json)
 	const webPages = getWebPages(json)

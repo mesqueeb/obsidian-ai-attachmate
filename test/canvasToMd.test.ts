@@ -3,8 +3,8 @@ import * as path from 'path'
 import { describe, expect, it } from 'vitest'
 import { convertCanvasToMd } from '../src/utils/canvasToMd'
 
-const TEST_CANVAS_PATH = path.join(__dirname, '../test-data/Test.canvas')
-const TEST_CANVAS = JSON.parse(readFileSync(TEST_CANVAS_PATH, 'utf-8'))
+const TEST_CANVAS_PATH = path.join(import.meta.dirname, '../test-data/Test.canvas')
+const TEST_CANVAS: unknown = JSON.parse(readFileSync(TEST_CANVAS_PATH, 'utf-8'))
 
 describe('canvasToMd', () => {
 	it('returns only the transcript content blocks (no template wrapper)', () => {

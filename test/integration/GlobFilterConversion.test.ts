@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { FileDaoImpl } from '../../src/dao/FileDaoImpl'
 import { CanvasService } from '../../src/service/CanvasService'
-import { DEFAULT_FILE_FILTER } from '../../src/service/SettingsService'
+import { DEFAULT_FILE_FILTER } from '../../src/utils/constants'
 import { InMemoryFileAdapter } from '../dao/InMemoryFileAdapter'
 import { readTestFile } from '../utils/testFileUtils'
 

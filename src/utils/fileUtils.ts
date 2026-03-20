@@ -18,7 +18,7 @@ export function parseCanvasContent(content: string): CanvasJson | null {
 			return null
 		}
 
-		const json = JSON.parse(trimmedContent)
+		const json: unknown = JSON.parse(trimmedContent)
 		if (
 			!json ||
 			typeof json !== 'object' ||
@@ -41,13 +41,13 @@ export function extractElements(
 ): string[] {
 	let nodes: CanvasNode[] = []
 	if (typeof json === 'object' && json !== null && 'nodes' in json && Array.isArray(json.nodes)) {
-		nodes = json.nodes as CanvasNode[]
+		nodes = json.nodes
 	}
 	return nodes
 		.filter((node: CanvasNode) => node.type === typeName)
 		.map((node: CanvasNode) => {
 			const content = typeof node[contentFieldName] === 'string' ? node[contentFieldName] : ''
-			return content as string
+			return content
 		})
 }
 
@@ -62,7 +62,7 @@ export function isNode(filePath: string): boolean {
 
 export function parseCanvasData(canvasContent: string): CanvasNode[] | null {
 	try {
-		const json = JSON.parse(canvasContent)
+		const json: unknown = JSON.parse(canvasContent)
 		let nodes: CanvasNode[] = []
 
 		if (json && typeof json === 'object' && 'nodes' in json && Array.isArray(json.nodes)) {

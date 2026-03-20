@@ -54,6 +54,7 @@ describe('Integration Test: Image Conversion', () => {
 
 	it(
 		'should create an image file, run the converter, and verify the .png.md file',
+		{ timeout: TEST_TIMEOUT },
 		async () => {
 			// Step 1: Create a test image file using the FileAdapter
 			await createImageFile('test-image.png')
@@ -66,60 +67,47 @@ describe('Integration Test: Image Conversion', () => {
 			const convertedContent = await fileAdapter.read(expectedMdPath)
 			verifyMarkdownStructure(convertedContent, 'test-image.png')
 		},
-		{ timeout: TEST_TIMEOUT },
 	)
 
-	it(
-		'should handle multiple image files',
-		async () => {
-			await createImageFile('test-image.png')
-			await createImageFile('test-image2.png')
-			await pngConverter.convertFiles()
+	it('should handle multiple image files', { timeout: TEST_TIMEOUT }, async () => {
+		await createImageFile('test-image.png')
+		await createImageFile('test-image2.png')
+		await pngConverter.convertFiles()
 
-			const files = [
-				{ path: 'transcripts/test-image.png.md', name: 'test-image.png' },
-				{ path: 'transcripts/test-image2.png.md', name: 'test-image2.png' },
-			]
+		const files = [
+			{ path: 'transcripts/test-image.png.md', name: 'test-image.png' },
+			{ path: 'transcripts/test-image2.png.md', name: 'test-image2.png' },
+		]
 
-			for (const file of files) {
-				const convertedContent = await fileAdapter.read(file.path)
-				verifyMarkdownStructure(convertedContent, file.name)
-			}
-		},
-		{ timeout: TEST_TIMEOUT },
-	)
+		for (const file of files) {
+			const convertedContent = await fileAdapter.read(file.path)
+			verifyMarkdownStructure(convertedContent, file.name)
+		}
+	})
 
-	it(
-		'should update modified image files',
-		async () => {
-			await createImageFile('test-image.png')
-			await pngConverter.convertFiles()
+	it('should update modified image files', { timeout: TEST_TIMEOUT }, async () => {
+		await createImageFile('test-image.png')
+		await pngConverter.convertFiles()
 
-			await new Promise((resolve) => setTimeout(resolve, 3))
-			await createImageFile('test-image2.png')
-			await pngConverter.convertFiles()
+		await new Promise((resolve) => setTimeout(resolve, 3))
+		await createImageFile('test-image2.png')
+		await pngConverter.convertFiles()
 
-			const expectedMdPath = 'transcripts/test-image2.png.md'
-			const convertedContent = await fileAdapter.read(expectedMdPath)
-			verifyMarkdownStructure(convertedContent, 'test-image2.png')
-		},
-		{ timeout: TEST_TIMEOUT },
-	)
+		const expectedMdPath = 'transcripts/test-image2.png.md'
+		const convertedContent = await fileAdapter.read(expectedMdPath)
+		verifyMarkdownStructure(convertedContent, 'test-image2.png')
+	})
 
-	it.skip(
-		'should remove orphaned files',
-		async () => {
-			await createImageFile('test-image.png')
-			await pngConverter.convertFiles()
+	it.skip('should remove orphaned files', { timeout: TEST_TIMEOUT }, async () => {
+		await createImageFile('test-image.png')
+		await pngConverter.convertFiles()
 
-			const mdPath = 'transcripts/test-image.png.md'
-			expect(await fileAdapter.read(mdPath)).toBeDefined()
+		const mdPath = 'transcripts/test-image.png.md'
+		expect(await fileAdapter.read(mdPath)).toBeDefined()
 
-			await fileAdapter.delete('test-image.png')
-			await pngConverter.convertFiles()
+		await fileAdapter.delete('test-image.png')
+		await pngConverter.convertFiles()
 
-			await expect(fileAdapter.read(mdPath)).rejects.toThrow()
-		},
-		{ timeout: TEST_TIMEOUT },
-	)
+		await expect(fileAdapter.read(mdPath)).rejects.toThrow()
+	})
 })

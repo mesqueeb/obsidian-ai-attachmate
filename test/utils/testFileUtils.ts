@@ -4,7 +4,10 @@ import { FileDao } from '../../src/dao/FileDao'
 import { InMemoryFileAdapter } from '../dao/InMemoryFileAdapter'
 
 export function readTestFile(testFileName: string): string {
-	return fs.readFileSync(path.resolve(__dirname, `../../test-data/${testFileName}`), 'utf-8')
+	return fs.readFileSync(
+		path.resolve(import.meta.dirname, `../../test-data/${testFileName}`),
+		'utf-8',
+	)
 }
 
 export function createTestCanvasFile(fileDao: FileDao, testFileName: string): Promise<void> {
@@ -29,7 +32,9 @@ export function readGeneratedTestFile(fileName: string, postfix = ''): string {
 }
 
 export function readTestBinaryFile(testFileName: string): ArrayBuffer {
-	const buffer = fs.readFileSync(path.resolve(__dirname, `../../test-data/${testFileName}`))
+	const buffer = fs.readFileSync(
+		path.resolve(import.meta.dirname, `../../test-data/${testFileName}`),
+	)
 	return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
 }
 

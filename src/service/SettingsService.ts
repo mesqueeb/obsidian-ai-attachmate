@@ -83,7 +83,10 @@ export class SettingsServiceImpl implements SettingsService, AttachmentParserCon
 	}
 
 	async loadSettings(): Promise<void> {
-		this.settings = Object.assign(this.getDefaultSettings(), await this.plugin.loadData())
+		this.settings = Object.assign(
+			this.getDefaultSettings(),
+			(await this.plugin.loadData()) as Partial<Settings>,
+		)
 	}
 
 	async updateRunOnStart(value: boolean): Promise<void> {

@@ -18,7 +18,7 @@ export class StatusView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'AI Attachmate Status'
+		return 'AI Attachmate status'
 	}
 
 	getIcon(): string {

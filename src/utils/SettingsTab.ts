@@ -26,11 +26,13 @@ export class SettingsTab extends PluginSettingTab {
 				'If you love using AI Attachmate, please consider supporting its continued development.',
 			)
 			.addButton((button) =>
+				// eslint-disable-next-line obsidianmd/ui/sentence-case
 				button.setButtonText('💜 Sponsor').onClick(() => {
 					window.open('https://github.com/sponsors/mesqueeb', '_blank')
 				}),
 			)
 			.addButton((button) =>
+				// eslint-disable-next-line obsidianmd/ui/sentence-case
 				button.setButtonText('☕ Buy me a coffee').onClick(() => {
 					window.open('https://buymeacoffee.com/mesqueeb', '_blank')
 				}),
@@ -45,6 +47,7 @@ export class SettingsTab extends PluginSettingTab {
 					el.appendText(' (everything). Use ')
 					el.createEl('code', { text: '**/attachments/*.{canvas,pdf,png,jpg,jpeg}' })
 					el.appendText(' to only transcribe files directly inside any ')
+					// eslint-disable-next-line obsidianmd/ui/sentence-case
 					el.createEl('code', { text: 'attachments/' })
 					el.appendText(' folder.')
 				}),
@@ -67,6 +70,7 @@ export class SettingsTab extends PluginSettingTab {
 					el.appendText(
 						' to place each transcript next to its source file (default), or a folder name like ',
 					)
+					// eslint-disable-next-line obsidianmd/ui/sentence-case
 					el.createEl('code', { text: 'transcripts' })
 					el.appendText(
 						' to collect them all in one place. If you change this setting, delete the old folder and re-transcribe.',

@@ -5,7 +5,7 @@ export class ObsidianFileAdapter implements FileAdapter {
 	constructor(private app: App) {}
 
 	async getFiles(): Promise<AdapterFile[]> {
-		const files = await this.app.vault.getFiles()
+		const files = this.app.vault.getFiles()
 		return files.map((file) => ({
 			path: file.path,
 			name: file.name,

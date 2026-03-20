@@ -31,14 +31,14 @@ export default class ObsidianAiAttachmate extends Plugin {
 		this.registerView(STATUS_VIEW_TYPE, (leaf) => new StatusView(leaf, statusTracker))
 
 		// Add ribbon button to open status view
-		this.addRibbonIcon('list-checks', 'AI Attachmate Status', async () => {
+		this.addRibbonIcon('list-checks', 'AI Attachmate status', async () => {
 			const existing = this.app.workspace.getLeavesOfType(STATUS_VIEW_TYPE)
 			if (existing.length > 0) {
-				this.app.workspace.revealLeaf(existing[0])
+				void this.app.workspace.revealLeaf(existing[0])
 			} else {
 				const leaf = this.app.workspace.getLeaf('tab')
 				await leaf.setViewState({ type: STATUS_VIEW_TYPE, active: true })
-				this.app.workspace.revealLeaf(leaf)
+				void this.app.workspace.revealLeaf(leaf)
 			}
 		})
 
@@ -154,7 +154,7 @@ export default class ObsidianAiAttachmate extends Plugin {
 
 		if (shouldAutoStart) {
 			this.app.workspace.onLayoutReady(() => {
-				runConversion()
+				void runConversion()
 			})
 		}
 	}

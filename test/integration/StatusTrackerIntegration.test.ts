@@ -110,7 +110,10 @@ describe('Integration: ConversionStatusTracker wired into converters', () => {
 			const doneIdx = statuses.indexOf('done')
 			const processingIdx = statuses.indexOf('processing')
 			if (processingIdx !== -1 && doneIdx !== -1) {
-				expect(doneIdx, `${path} had 'done' before 'processing': ${statuses.join(' → ')}`).toBeGreaterThan(processingIdx)
+				expect(
+					doneIdx,
+					`${path} had 'done' before 'processing': ${statuses.join(' → ')}`,
+				).toBeGreaterThan(processingIdx)
 			}
 		}
 	})
