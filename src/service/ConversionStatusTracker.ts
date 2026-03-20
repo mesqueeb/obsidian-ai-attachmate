@@ -10,12 +10,16 @@ export class ConversionStatusTracker {
 	private files = new Map<string, FileStatus>()
 	private subscribers = new Set<() => void>()
 
-	initFiles(paths: string[]): void {
+	clear(): void {
 		this.files.clear()
+		this.notify()
+	}
+
+	initFiles(paths: string[]): void {
 		for (const path of paths) {
 			this.files.set(path, { path, status: 'pending' })
 		}
-		this.notify()
+		if (paths.length > 0) this.notify()
 	}
 
 	setStatus(path: string, status: ConversionStatus, errorMessage?: string): void {

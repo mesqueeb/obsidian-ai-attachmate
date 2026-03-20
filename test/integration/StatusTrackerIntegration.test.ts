@@ -81,6 +81,40 @@ describe('Integration: ConversionStatusTracker wired into converters', () => {
 		expect(file?.status).toBe('done')
 	})
 
+	it('new files without a transcript never show done before processing', async () => {
+		// Regression: modifyConvertedFiles used to set files to 'done' immediately when no
+		// transcript existed, then createConvertedFiles would flip them back to 'processing'.
+		// With multiple files this caused a visible done → processing jump in the status view.
+		const mockParser: AttachmentParserService = {
+			validateApiKey: () => true,
+			parseAttachmentContent: async () => '# Transcript',
+		}
+		const pngConverter = new PngConverterService(fileDao, 'transcripts', mockParser)
+		pngConverter.setStatusTracker(tracker)
+		await createTestImageFile(fileAdapter, 'a.png', 'test-image.png')
+		await createTestImageFile(fileAdapter, 'b.png', 'test-image.png')
+		await createTestImageFile(fileAdapter, 'c.png', 'test-image.png')
+
+		const history: { [key: string]: string[] } = {}
+		tracker.onChange(() => {
+			for (const file of tracker.getAll()) {
+				if (!history[file.path]) history[file.path] = []
+				const h = history[file.path]
+				if (h.at(-1) !== file.status) h.push(file.status)
+			}
+		})
+
+		await pngConverter.convertFiles()
+
+		for (const [path, statuses] of Object.entries(history)) {
+			const doneIdx = statuses.indexOf('done')
+			const processingIdx = statuses.indexOf('processing')
+			if (processingIdx !== -1 && doneIdx !== -1) {
+				expect(doneIdx, `${path} had 'done' before 'processing': ${statuses.join(' → ')}`).toBeGreaterThan(processingIdx)
+			}
+		}
+	})
+
 	it('processed canvas file ends as done in tracker', async () => {
 		const canvasService = new CanvasService(fileDao, {
 			canvasPostfix: '.canvas.md',

@@ -2,14 +2,23 @@ import { describe, expect, it } from 'vitest'
 import { ConversionStatusTracker } from '../../src/service/ConversionStatusTracker'
 
 describe('ConversionStatusTracker', () => {
-	it('initFiles clears previous state', () => {
+	it('clear() wipes all tracked files', () => {
 		const tracker = new ConversionStatusTracker()
 		tracker.initFiles(['old.pdf'])
-		tracker.initFiles(['new.pdf'])
+		tracker.clear()
+
+		expect(tracker.getAll()).toHaveLength(0)
+	})
+
+	it('initFiles accumulates files across multiple calls', () => {
+		const tracker = new ConversionStatusTracker()
+		tracker.initFiles(['a.pdf'])
+		tracker.initFiles(['b.png'])
 
 		const all = tracker.getAll()
-		expect(all).toHaveLength(1)
-		expect(all[0].path).toBe('new.pdf')
+		expect(all).toHaveLength(2)
+		expect(all.find((f) => f.path === 'a.pdf')?.status).toBe('pending')
+		expect(all.find((f) => f.path === 'b.png')?.status).toBe('pending')
 	})
 
 	it('setStatus updates a file status', () => {

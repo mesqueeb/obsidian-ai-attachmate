@@ -196,7 +196,11 @@ export abstract class BaseConverterService {
 		const modifiedFileNames = []
 		for (const source of sourceFiles) {
 			const convertedFile = convertedFileMap.get(source.name)
-			if (convertedFile && source.modifiedTime >= convertedFile.modifiedTime) {
+			if (!convertedFile) {
+				// No transcript yet — createConvertedFiles owns this file, leave it as pending
+				continue
+			}
+			if (source.modifiedTime >= convertedFile.modifiedTime) {
 				try {
 					this.tracker?.setStatus(source.path, 'processing')
 					const targetPath = this.getConvertedFilePath(source.path)

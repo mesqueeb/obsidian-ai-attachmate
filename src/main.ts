@@ -100,11 +100,12 @@ export default class ObsidianAiAttachmate extends Plugin {
 		// Initialize converters and other services
 		const runConversion = async (): Promise<void> => {
 			if (this.isConverting) {
-				new Notice('Conversion is already in progress. Please wait.')
+				new Notice('Transcription is already in progress. Please wait.')
 				return
 			}
 
 			this.isConverting = true
+			statusTracker.clear()
 			try {
 				// Run converters sequentially
 				await canvasService.convertFiles()
@@ -127,7 +128,7 @@ export default class ObsidianAiAttachmate extends Plugin {
 				} else {
 					// Handle other errors
 					new Notice('An error occurred during transcription')
-					console.error('Conversion error:', error)
+					console.error('Transcription error:', error)
 				}
 			} finally {
 				this.isConverting = false
