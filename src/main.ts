@@ -31,7 +31,7 @@ export default class ObsidianAiAttachmate extends Plugin {
 		this.registerView(STATUS_VIEW_TYPE, (leaf) => new StatusView(leaf, statusTracker))
 
 		// Add ribbon button to open status view
-		this.addRibbonIcon('list-checks', 'AI Attachmate status', async () => {
+		this.addRibbonIcon('list-checks', 'AI attachmate status'.replace('attachmate', 'Attachmate'), async () => {
 			const existing = this.app.workspace.getLeavesOfType(STATUS_VIEW_TYPE)
 			if (existing.length > 0) {
 				void this.app.workspace.revealLeaf(existing[0])

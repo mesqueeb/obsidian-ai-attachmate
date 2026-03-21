@@ -36,7 +36,7 @@ export abstract class BaseConverterService {
 				await this.fileDao.createFolder(this.config.transcriptsFolder)
 			}
 
-			const allFiles = await this.fileDao.getFiles()
+			const allFiles = this.fileDao.getFiles()
 			const filteredPaths = this.config.fileFilter
 				? new Set(
 						micromatch(

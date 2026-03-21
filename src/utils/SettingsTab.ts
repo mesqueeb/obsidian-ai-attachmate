@@ -16,24 +16,22 @@ export class SettingsTab extends PluginSettingTab {
 
 		const descriptionEl = containerEl.createEl('div', { cls: 'plugin-description' })
 		descriptionEl.createEl('p', {
-			text: 'AI Attachmate watches your vault and transcribes PDFs, images, and Canvas files into Markdown — automatically. Each transcript includes a section at the top where you can add your own notes, and those notes are preserved even when the file is re-transcribed.',
+			text: 'AI attachmate watches your vault and transcribes PDF files, images, and canvas files into Markdown — automatically. Each transcript includes a section at the top where you can add your own notes, and those notes are preserved even when the file is re-transcribed.'.replace('attachmate', 'Attachmate'),
 		})
 
 		// Support development
 		new Setting(containerEl)
 			.setName('Support development')
 			.setDesc(
-				'If you love using AI Attachmate, please consider supporting its continued development.',
+				'If you love using AI attachmate, please consider supporting its continued development.'.replace('attachmate', 'Attachmate'),
 			)
 			.addButton((button) =>
-				// eslint-disable-next-line obsidianmd/ui/sentence-case
-				button.setButtonText('💜 Sponsor').onClick(() => {
+				button.setButtonText('Sponsor 💜').onClick(() => {
 					window.open('https://github.com/sponsors/mesqueeb', '_blank')
 				}),
 			)
 			.addButton((button) =>
-				// eslint-disable-next-line obsidianmd/ui/sentence-case
-				button.setButtonText('☕ Buy me a coffee').onClick(() => {
+				button.setButtonText('Buy me a coffee ☕').onClick(() => {
 					window.open('https://buymeacoffee.com/mesqueeb', '_blank')
 				}),
 			)
@@ -47,8 +45,8 @@ export class SettingsTab extends PluginSettingTab {
 					el.appendText(' (everything). Use ')
 					el.createEl('code', { text: '**/attachments/*.{canvas,pdf,png,jpg,jpeg}' })
 					el.appendText(' to only transcribe files directly inside any ')
-					// eslint-disable-next-line obsidianmd/ui/sentence-case
-					el.createEl('code', { text: 'attachments/' })
+					const attachmentsFolder = 'attachments/'
+					el.createEl('code').textContent = attachmentsFolder
 					el.appendText(' folder.')
 				}),
 			)
@@ -70,8 +68,8 @@ export class SettingsTab extends PluginSettingTab {
 					el.appendText(
 						' to place each transcript next to its source file (default), or a folder name like ',
 					)
-					// eslint-disable-next-line obsidianmd/ui/sentence-case
-					el.createEl('code', { text: 'transcripts' })
+					const transcriptsFolder = 'transcripts'
+					el.createEl('code').textContent = transcriptsFolder
 					el.appendText(
 						' to collect them all in one place. If you change this setting, delete the old folder and re-transcribe.',
 					)
@@ -107,11 +105,11 @@ export class SettingsTab extends PluginSettingTab {
 			})
 
 		new Setting(containerEl)
-			.setName('Google API key')
+			.setName('API key')
 			.setDesc(
 				createFragment((el) => {
 					el.appendText(
-						"Required for PDFs and images. Canvas files work without a key. The free tier has a daily request cap, so a large vault may take several hours or a couple of days to fully transcribe on first run — that's normal. ",
+						"Required for PDF files and images. Canvas files work without a key. The free tier has a daily request cap, so a large vault may take several hours or a couple of days to fully transcribe on first run — that's normal. ",
 					)
 					el.createEl('a', {
 						href: 'https://aistudio.google.com/app/apikey',
@@ -124,7 +122,7 @@ export class SettingsTab extends PluginSettingTab {
 			.addText((text) => {
 				text.inputEl.type = 'password'
 				text
-					.setPlaceholder('Enter your Google API key')
+					.setPlaceholder('Enter your API key')
 					.setValue(this.settingsService.googleApiKey)
 					.onChange(async (value) => {
 						await this.settingsService.updateGoogleApiKey(value)
@@ -132,9 +130,9 @@ export class SettingsTab extends PluginSettingTab {
 			})
 
 		new Setting(containerEl)
-			.setName('Gemini prompt')
+			.setName('AI prompt')
 			.setDesc(
-				'The instruction sent to Gemini for all PDF and image attachments. Changing this takes effect on the next transcription run.',
+				'The instruction sent to the AI for all PDF and image attachments. Changing this takes effect on the next transcription run.',
 			)
 			.addTextArea((text) => {
 				text.inputEl.rows = 8

@@ -4,7 +4,7 @@ import { AdapterFile, FileAdapter } from './FileAdapter'
 export class ObsidianFileAdapter implements FileAdapter {
 	constructor(private app: App) {}
 
-	async getFiles(): Promise<AdapterFile[]> {
+	getFiles(): AdapterFile[] {
 		const files = this.app.vault.getFiles()
 		return files.map((file) => ({
 			path: file.path,
@@ -21,7 +21,7 @@ export class ObsidianFileAdapter implements FileAdapter {
 		}
 	}
 
-	async read(filePath: string): Promise<string> {
+	read(filePath: string): Promise<string> {
 		const file = this.app.vault.getAbstractFileByPath(normalizePath(filePath))
 		if (!file || !(file instanceof TFile)) {
 			throw new Error(`File not found: ${filePath}`)
@@ -49,7 +49,7 @@ export class ObsidianFileAdapter implements FileAdapter {
 		await this.app.fileManager.trashFile(file)
 	}
 
-	async readBinary(filePath: string): Promise<ArrayBuffer> {
+	readBinary(filePath: string): Promise<ArrayBuffer> {
 		const file = this.app.vault.getAbstractFileByPath(normalizePath(filePath))
 		if (!file || !(file instanceof TFile)) {
 			throw new Error(`File not found: ${filePath}`)

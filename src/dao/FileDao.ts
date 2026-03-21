@@ -12,11 +12,11 @@ export class File {
 		return this.sizeInBytes / (1024 * 1024)
 	}
 
-	async getContent(): Promise<string> {
+	getContent(): Promise<string> {
 		return this.contentResolver()
 	}
 
-	async getBinaryContent(): Promise<ArrayBuffer> {
+	getBinaryContent(): Promise<ArrayBuffer> {
 		return this.binaryContentResolver()
 	}
 }
@@ -26,7 +26,7 @@ export type FileDao = {
 
 	createFolder(folderPath: string): Promise<void>
 
-	getFiles(): Promise<File[]>
+	getFiles(): File[]
 
 	createOrUpdateFile(filePath: string, content: string): Promise<void>
 

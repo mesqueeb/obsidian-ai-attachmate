@@ -125,7 +125,7 @@ Please check the plugin documentation for troubleshooting steps.`
 		}
 	}
 
-	async parseAttachmentContent(
+	parseAttachmentContent(
 		fileSizeMB: number,
 		getBuffer: () => Promise<ArrayBuffer>,
 		filePath: string,

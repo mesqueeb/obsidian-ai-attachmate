@@ -39,8 +39,8 @@ export class FileDaoImpl implements FileDao {
 		}
 	}
 
-	async getFiles(): Promise<File[]> {
-		const files = await this.fileAdapter.getFiles()
+	getFiles(): File[] {
+		const files = this.fileAdapter.getFiles()
 		return files.map(
 			(file) =>
 				new File(
@@ -48,25 +48,13 @@ export class FileDaoImpl implements FileDao {
 					file.name,
 					file.modifiedTime,
 					file.sizeInBytes,
-					async () => {
-						const content = await this.fileAdapter.read(file.path)
-						if (content === undefined) {
-							throw new Error(`File not found: ${file.path}`)
-						}
-						return content
-					},
-					async () => {
-						const content = this.fileAdapter.readBinary(file.path)
-						if (content === undefined) {
-							throw new Error(`File not found: ${file.path}`)
-						}
-						return content
-					},
+					() => this.fileAdapter.read(file.path),
+					() => this.fileAdapter.readBinary(file.path),
 				),
 		)
 	}
 
-	async createFolder(path: string): Promise<void> {
-		await this.fileAdapter.createFolder(path)
+	createFolder(path: string): Promise<void> {
+		return this.fileAdapter.createFolder(path)
 	}
 }

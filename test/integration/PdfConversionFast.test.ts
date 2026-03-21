@@ -98,12 +98,12 @@ describe('Integration Test: PDF Converter (fast, mock parser)', () => {
 		await new Promise((resolve) => setTimeout(resolve, 3))
 
 		const mdPath = 'transcripts/test.pdf.md'
-		const timeBefore = (await fileAdapter.getFiles()).find((f) => f.path === mdPath)?.modifiedTime
+		const timeBefore = (fileAdapter.getFiles()).find((f) => f.path === mdPath)?.modifiedTime
 
 		await new Promise((resolve) => setTimeout(resolve, 3))
 		await pdfConverter.convertFiles()
 
-		const timeAfter = (await fileAdapter.getFiles()).find((f) => f.path === mdPath)?.modifiedTime
+		const timeAfter = (fileAdapter.getFiles()).find((f) => f.path === mdPath)?.modifiedTime
 		expect(timeAfter).toBe(timeBefore)
 	})
 })

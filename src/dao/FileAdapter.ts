@@ -8,7 +8,7 @@ export type AdapterFile = {
 export type FileAdapter = {
 	createFolder(folderPath: string): Promise<void>
 
-	getFiles(): Promise<AdapterFile[]>
+	getFiles(): AdapterFile[]
 
 	read(filePath: string): Promise<string>
 

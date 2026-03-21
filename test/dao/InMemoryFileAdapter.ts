@@ -82,7 +82,7 @@ export class InMemoryFileAdapter implements FileAdapter {
 		this.modificationTimes.set(filePath, Date.now())
 	}
 
-	async getFiles(): Promise<AdapterFile[]> {
+	getFiles(): AdapterFile[] {
 		const textFiles = Array.from(this.storage.entries())
 			.filter(([path]) => !path.endsWith('/.folder'))
 			.map(([path]) => this.createAdapterFile(path, false))

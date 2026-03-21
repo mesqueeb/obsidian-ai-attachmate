@@ -18,20 +18,22 @@ export class StatusView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'AI Attachmate status'
+		return 'AI attachmate status'.replace('attachmate', 'Attachmate')
 	}
 
 	getIcon(): string {
 		return 'list-checks'
 	}
 
-	async onOpen(): Promise<void> {
+	onOpen(): Promise<void> {
 		this.unsubscribe = this.tracker.onChange(() => this.render())
 		this.render()
+		return Promise.resolve()
 	}
 
-	async onClose(): Promise<void> {
+	onClose(): Promise<void> {
 		this.unsubscribe?.()
+		return Promise.resolve()
 	}
 
 	private render(): void {
