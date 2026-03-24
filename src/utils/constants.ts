@@ -23,9 +23,9 @@ export const DEFAULT_TEMPLATE = `# Notes
 
 # Content
 
-File: [{{filename}}]({{path}})
+File: [{{filename}}]({{path_encoded}})
 
-![[{{path}}#height=500]]
+![]({{path_encoded}}#height=500)
 
 > Feel free to write custom notes ABOVE this line, they will be preserved.
 > Please note: Deleting the original file will delete this file.`

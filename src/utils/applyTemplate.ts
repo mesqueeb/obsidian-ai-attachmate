@@ -9,6 +9,7 @@ export function applyTemplate(
 	let header = template
 		.replace(/\{\{filename\}\}/g, vars.filename)
 		.replace(/\{\{path\}\}/g, vars.path)
+		.replace(/\{\{path_encoded\}\}/g, vars.path.replace(/ /g, '%20'))
 
 	if (options?.canvas) {
 		header = header.replace(/#height=\d+/g, '')
