@@ -20,15 +20,14 @@ export function generateTestCanvasFile(): string {
 	return readTestFile('Test.canvas')
 }
 
-export function readGeneratedTestFile(fileName: string, postfix = ''): string {
-	// Remove .md extension if present
+export function readGeneratedTestFile(fileName: string, postfix = '', targetFolder = 'transcripts'): string {
 	const baseName = fileName.replace(postfix, '')
-
-	// Read the template file
 	const templateContent = readTestFile('Test.canvas.md')
-
-	// Replace all occurrences of Test.canvas with the new base name
-	return templateContent.replace(/\[\[Test\.canvas\]\]/g, `[[${baseName}.canvas]]`)
+	const depth = targetFolder.split('/').length
+	const relativePrefix = '../'.repeat(depth)
+	return templateContent
+		.replace(/\(\.\.\/Test\.canvas\)/g, `(${relativePrefix}${baseName}.canvas)`)
+		.replace(/\[Test\.canvas\]/g, `[${baseName}.canvas]`)
 }
 
 export function readTestBinaryFile(testFileName: string): ArrayBuffer {

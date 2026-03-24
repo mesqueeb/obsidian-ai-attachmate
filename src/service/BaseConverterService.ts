@@ -67,7 +67,15 @@ export abstract class BaseConverterService {
 		}
 	}
 
-	protected abstract convertContent(source: File): Promise<string>
+	protected abstract convertContent(source: File, targetPath: string): Promise<string>
+
+	private validateFileName(source: File): string | null {
+		const UNSUPPORTED = /[#^[\]|]/
+		if (UNSUPPORTED.test(source.name)) {
+			return 'File name contains unsupported characters: # ^ [ ] |'
+		}
+		return null
+	}
 
 	protected getSourceName(file: File): string {
 		return file.name.slice(0, -this.config.targetExtension.length) + this.config.sourceExtension
@@ -164,6 +172,11 @@ export abstract class BaseConverterService {
 
 		const processedNames = []
 		for (const source of sourceFiles.filter((source) => !convertedNames.has(source.name))) {
+			const validationError = this.validateFileName(source)
+			if (validationError) {
+				this.tracker?.setStatus(source.path, 'error', validationError)
+				continue
+			}
 			try {
 				this.tracker?.setStatus(source.path, 'processing')
 				const targetPath = this.getConvertedFilePath(source.path)
@@ -213,6 +226,11 @@ export abstract class BaseConverterService {
 		// Async pass: re-process files whose source is newer than the transcript
 		const modifiedFileNames = []
 		for (const source of toProcess) {
+			const validationError = this.validateFileName(source)
+			if (validationError) {
+				this.tracker?.setStatus(source.path, 'error', validationError)
+				continue
+			}
 			try {
 				this.tracker?.setStatus(source.path, 'processing')
 				const targetPath = this.getConvertedFilePath(source.path)
@@ -233,7 +251,7 @@ export abstract class BaseConverterService {
 	}
 
 	protected async convertAndSave(source: File, targetPath: string): Promise<void> {
-		const newContent = await this.convertContent(source)
+		const newContent = await this.convertContent(source, targetPath)
 		let finalContent = newContent
 
 		try {

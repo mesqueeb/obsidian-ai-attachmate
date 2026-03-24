@@ -22,12 +22,12 @@ export class CanvasService extends BaseConverterService {
 		this.getTemplate = getTemplate
 	}
 
-	protected async convertContent(source: File): Promise<string> {
+	protected async convertContent(source: File, targetPath: string): Promise<string> {
 		const rawContent = await source.getContent()
 		const transcript = convertCanvasToMd(rawContent)
 		return applyTemplate(
 			this.getTemplate(),
-			{ filename: source.name, path: source.path },
+			{ filename: source.name, path: source.path, targetPath },
 			transcript,
 			{ canvas: true },
 		)

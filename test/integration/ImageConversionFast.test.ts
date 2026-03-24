@@ -94,8 +94,8 @@ describe('Integration Test: Image Converter (fast, mock parser)', () => {
 		await pngConverter.convertFiles()
 
 		const content = await fileAdapter.read('transcripts/test-image.png.md')
-		expect(content).toContain('File: [test-image.png](sub folder/test-image.png)')
-		expect(content).toContain('![[sub folder/test-image.png#height=500]]')
+		expect(content).toContain('File: [test-image.png](../sub%20folder/test-image.png)')
+		expect(content).toContain('![](../sub%20folder/test-image.png#height=500)')
 	})
 
 	it('produces output exactly matching the fixture file', async () => {

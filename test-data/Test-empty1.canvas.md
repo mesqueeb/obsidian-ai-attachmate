@@ -2,9 +2,9 @@
 
 # Content
 
-File: [Test-empty1.canvas](Test-empty1.canvas)
+File: [Test-empty1.canvas](../Test-empty1.canvas)
 
-![[Test-empty1.canvas]]
+![](../Test-empty1.canvas)
 
 > Feel free to write custom notes ABOVE this line, they will be preserved.
 > Please note: Deleting the original file will delete this file.

@@ -38,8 +38,8 @@ describe('Integration Test: PDF Converter (fast, mock parser)', () => {
 		await pdfConverter.convertFiles()
 
 		const content = await fileAdapter.read('transcripts/test.pdf.md')
-		expect(content).toContain('File: [test.pdf](sub folder/test.pdf)')
-		expect(content).toContain('![[sub folder/test.pdf#height=500]]')
+		expect(content).toContain('File: [test.pdf](../sub%20folder/test.pdf)')
+		expect(content).toContain('![](../sub%20folder/test.pdf#height=500)')
 	})
 
 	it('skips conversion when API key is not valid', async () => {

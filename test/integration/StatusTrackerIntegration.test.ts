@@ -184,4 +184,39 @@ describe('Integration: ConversionStatusTracker wired into converters', () => {
 
 		expect(statusOfUpToDateWhileOtherIsProcessing).toBe('done')
 	})
+
+	it('canvas file with unsupported characters in name is skipped with error', async () => {
+		const canvasService = new CanvasService(fileDao, {
+			canvasPostfix: '.canvas.md',
+			runOnStart: false,
+			transcriptsFolder: 'transcripts',
+		})
+		canvasService.setStatusTracker(tracker)
+		await fileDao.createOrUpdateFile('bad#name.canvas', '{"nodes":[],"edges":[]}')
+
+		await canvasService.convertFiles()
+
+		const file = tracker.getAll().find((f) => f.path === 'bad#name.canvas')
+		expect(file?.status).toBe('error')
+		expect(file?.errorMessage).toContain('# ^ [ ] |')
+		expect(fileAdapter.getFiles().some((f) => f.path.endsWith('.canvas.md'))).toBe(false)
+	})
+
+	it('valid file is converted while invalid file is skipped in the same run', async () => {
+		const canvasService = new CanvasService(fileDao, {
+			canvasPostfix: '.canvas.md',
+			runOnStart: false,
+			transcriptsFolder: 'transcripts',
+		})
+		canvasService.setStatusTracker(tracker)
+		await createTestCanvasFile(fileDao, 'Test.canvas')
+		await fileDao.createOrUpdateFile('bad|name.canvas', '{"nodes":[],"edges":[]}')
+
+		await canvasService.convertFiles()
+
+		const good = tracker.getAll().find((f) => f.path === 'Test.canvas')
+		const bad = tracker.getAll().find((f) => f.path === 'bad|name.canvas')
+		expect(good?.status).toBe('done')
+		expect(bad?.status).toBe('error')
+	})
 })

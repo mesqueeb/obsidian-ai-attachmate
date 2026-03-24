@@ -20,7 +20,7 @@ export class JpgConverterService extends BaseConverterService {
 		})
 	}
 
-	protected async convertContent(source: File): Promise<string> {
+	protected async convertContent(source: File, targetPath: string): Promise<string> {
 		const transcript = await this.parser.parseAttachmentContent(
 			source.sizeInMB,
 			() => source.getBinaryContent(),
@@ -28,7 +28,7 @@ export class JpgConverterService extends BaseConverterService {
 		)
 		return applyTemplate(
 			this.getTemplate(),
-			{ filename: source.name, path: source.path },
+			{ filename: source.name, path: source.path, targetPath },
 			transcript,
 		)
 	}
