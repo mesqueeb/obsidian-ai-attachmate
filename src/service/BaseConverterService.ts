@@ -193,7 +193,10 @@ export abstract class BaseConverterService {
 			convertedFiles.map((convertedFile) => [this.getSourceName(convertedFile), convertedFile]),
 		)
 
-		const modifiedFileNames = []
+		// Synchronous pre-pass: immediately mark up-to-date files as done and collect
+		// files that need re-processing. This ensures up-to-date files are never stuck
+		// as 'pending' while an async re-conversion is in progress for another file.
+		const toProcess: File[] = []
 		for (const source of sourceFiles) {
 			const convertedFile = convertedFileMap.get(source.name)
 			if (!convertedFile) {
@@ -201,22 +204,28 @@ export abstract class BaseConverterService {
 				continue
 			}
 			if (source.modifiedTime >= convertedFile.modifiedTime) {
-				try {
-					this.tracker?.setStatus(source.path, 'processing')
-					const targetPath = this.getConvertedFilePath(source.path)
-					await this.convertAndSave(source, targetPath)
-					this.tracker?.setStatus(source.path, 'done')
-					modifiedFileNames.push(source.name)
-				} catch (error) {
-					const message = error instanceof Error ? error.message : String(error)
-					this.tracker?.setStatus(source.path, 'error', message)
-					if (error instanceof FatalProcessingError) {
-						throw error
-					}
-					console.error(`Error processing file ${source.name}:`, error)
-				}
+				toProcess.push(source)
 			} else {
 				this.tracker?.setStatus(source.path, 'done')
+			}
+		}
+
+		// Async pass: re-process files whose source is newer than the transcript
+		const modifiedFileNames = []
+		for (const source of toProcess) {
+			try {
+				this.tracker?.setStatus(source.path, 'processing')
+				const targetPath = this.getConvertedFilePath(source.path)
+				await this.convertAndSave(source, targetPath)
+				this.tracker?.setStatus(source.path, 'done')
+				modifiedFileNames.push(source.name)
+			} catch (error) {
+				const message = error instanceof Error ? error.message : String(error)
+				this.tracker?.setStatus(source.path, 'error', message)
+				if (error instanceof FatalProcessingError) {
+					throw error
+				}
+				console.error(`Error processing file ${source.name}:`, error)
 			}
 		}
 
