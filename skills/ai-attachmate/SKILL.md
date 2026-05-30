@@ -66,16 +66,22 @@ tsx <skill-dir>/scripts/transcribe-canvas.ts "<vault>/<source>" | \
    - In Codex, use available image/PDF inspection tools. For images, inspect the local image path directly when possible; for PDFs, convert pages to image files first if needed.
    - If the runner cannot inspect the attachment, report the file as an error instead of inventing a transcript.
 2. Apply the user's configured `prompt` from the plan output verbatim as its instruction for that file. The prompt's output is the transcript body.
-3. Pipe the body to `write-transcript.ts`. Avoid `echo` for generated bodies because transcripts may contain quotes, backslashes, or multiple lines:
+3. **Stream the body in chunks to avoid hitting per-response output limits.** Claude Code responses can cap around ~16k tokens; Codex limits vary by model/interface, so do not rely on a specific number. Density varies wildly across PDFs; chunking is a defensive default, not an optimisation. For PDFs:
+   1. First, check the page count (e.g. `pdfinfo "<vault>/<source>" | awk '/^Pages:/{print $2}'`). If the page count is unavailable, process sequential page ranges only if the runner can tell when no pages remain; otherwise report the file as an error instead of guessing.
+   2. Pick a chunk size of **~4 pages per response** (for example, pages `1-4`, `5-8`, etc.) using the runner's available PDF/page extraction mechanism.
+   3. For each chunk: inspect that page range, then immediately append the generated transcript body to a temp Markdown file like `/tmp/aiattach_<id>.md` using the runner's available file-writing mechanism. In Codex, that may mean converting the page range to images or text files with local tools first, then writing/appending the transcript body to the temp file. Do NOT emit the transcript text inline as plain assistant output; the file is what stores it.
+   4. After all chunks are written, pipe the concatenated temp file to `write-transcript.ts`.
+
+   For images and single-page PDFs, one temp-file write is fine.
 
 ```sh
-cat <<'TRANSCRIPT_BODY' | tsx <skill-dir>/scripts/write-transcript.ts \
+cat /tmp/aiattach_<id>.md | tsx <skill-dir>/scripts/write-transcript.ts \
   --vault "<vault>" --source "<source>" --target "<target>" --user-zone "<zone>"
-<body>
-TRANSCRIPT_BODY
 ```
 
 `write-transcript.ts` handles applying the user's `template` and re-attaching the preserved `userZone` above the auto-generated marker.
+
+If a worker hits the output cap mid-chunk anyway, it should retry that chunk with a smaller page range (2 pages, then 1) before reporting an error. Never invent or truncate content silently.
 
 Each worker should return only a short status (success / error message), never the file contents. Keep the main agent's context clean.
 
