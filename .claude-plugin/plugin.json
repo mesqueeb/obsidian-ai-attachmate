@@ -1,0 +1,6 @@
+{
+  "name": "obsidian-ai-attachmate",
+  "skills": [
+    "./skills/ai-attachmate"
+  ]
+}
