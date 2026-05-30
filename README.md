@@ -61,6 +61,22 @@ Relative paths (`./`, `../`) are resolved per file. If a `../` path would go abo
 | PDF (`.pdf`)                    | Yes              |
 | Image (`.png`, `.jpg`, `.jpeg`) | Yes              |
 
+## Skill usage
+
+Install the companion agent skill:
+
+```sh
+npx skills add mesqueeb/obsidian-ai-attachmate
+```
+
+It lets your agent transcribe PDFs, images, and Canvas files in an Obsidian vault using the same settings as the plugin.
+
+## Support development
+
+If you love using AI Attachmate, please consider supporting its continued development.
+
+[![💜 Sponsor](https://img.shields.io/badge/💜_Sponsor-GitHub-informational?style=flat)](https://github.com/sponsors/mesqueeb) [![☕ Buy me a coffee](https://img.shields.io/badge/☕_Buy_me_a_coffee-buymeacoffee.com-yellow?style=flat)](https://buymeacoffee.com/mesqueeb)
+
 ## Build from source
 
 ```sh
@@ -71,12 +87,6 @@ npm run build-and-install -- /path/to/your/obsidian/vault
 ```
 
 Then reload the plugin in Obsidian (Settings → Community plugins → AI Attachmate → toggle off and on).
-
-## Support development
-
-If you love using AI Attachmate, please consider supporting its continued development.
-
-[![💜 Sponsor](https://img.shields.io/badge/💜_Sponsor-GitHub-informational?style=flat)](https://github.com/sponsors/mesqueeb) [![☕ Buy me a coffee](https://img.shields.io/badge/☕_Buy_me_a_coffee-buymeacoffee.com-yellow?style=flat)](https://buymeacoffee.com/mesqueeb)
 
 ## License
 
