@@ -1,16 +1,16 @@
 ---
 name: ai-attachmate
-description: Transcribe PDFs, images, and Canvas files in an Obsidian vault to Markdown using Claude as the AI provider. Mirrors the AI Attachmate Obsidian plugin's behavior (file filter, prompt, template, transcripts folder, user-zone preservation, orphan cleanup) but routes vision/PDF reading through Claude instead of Gemini. Use when the user wants to bulk-transcribe attachments in an Obsidian vault, mentions "ai-attachmate", "transcribe attachments", "process my vault attachments", or runs this skill from inside an Obsidian vault folder.
+description: Transcribe PDFs, images, and Canvas files in an Obsidian vault to Markdown using the active agent's vision/PDF tools instead of Gemini. Mirrors AI Attachmate plugin behavior: file filters, prompts, templates, transcript paths, user-zone preservation, and orphan handling. Works in Claude Code, Codex, or another local-file runner. Use when the user wants to bulk-transcribe attachments in an Obsidian vault, mentions "ai-attachmate", "transcribe attachments", "process my vault attachments", or runs this skill from inside an Obsidian vault folder.
 ---
 
 # AI Attachmate
 
-Bulk-transcribe an Obsidian vault's attachments (PDFs, images, Canvas files) into Markdown notes using Claude.
+Bulk-transcribe an Obsidian vault's attachments (PDFs, images, Canvas files) into Markdown notes using the current agent's LLM and file-inspection tools.
 
 ## Prerequisites
 
 - `tsx` installed globally: `npm install -g tsx`
-- An Obsidian vault that has the AI Attachmate plugin configured (settings live at `<vault>/.obsidian/plugins/ai-attachmate/data.json`)
+- An Obsidian vault. If the AI Attachmate plugin has settings at `<vault>/.obsidian/plugins/ai-attachmate/data.json`, reuse them; otherwise the scripts use plugin defaults.
 
 ## Workflow
 
@@ -47,32 +47,37 @@ It emits JSON to stdout:
 
 If `newFiles` + `staleFiles` is empty and there are no orphans, report "nothing to do" and stop.
 
-### 3. Transcribe (fan out via sub-agents)
+### 3. Transcribe
 
-For each file in `newFiles` and `staleFiles`, spawn a sub-agent. Batch ~5–10 in parallel by sending multiple Agent tool calls in a single message.
+Process each file in `newFiles` and `staleFiles`. If the runner supports sub-agents or parallel tasks, fan out in small batches of ~5-10 files. If not, process them serially in the main agent.
 
 **For `.canvas` files** — no AI needed, sub-agent (or main agent) just runs:
 
 ```sh
-tsx <skill-dir>/scripts/transcribe-canvas.ts <vault>/<source> | \
+tsx <skill-dir>/scripts/transcribe-canvas.ts "<vault>/<source>" | \
   tsx <skill-dir>/scripts/write-transcript.ts \
-    --vault <vault> --source <source> --target <target> --user-zone <zone>
+    --vault "<vault>" --source "<source>" --target "<target>" --user-zone "<zone>"
 ```
 
-**For `.pdf` / `.png` / `.jpg` / `.jpeg`** — each sub-agent is instructed to:
+**For `.pdf` / `.png` / `.jpg` / `.jpeg`** — each worker is instructed to:
 
-1. Read the file at `<vault>/<source>` (Claude reads PDFs and images natively).
+1. Inspect the file at `<vault>/<source>` using the runner's available local file, image, or PDF tools.
+   - In Claude Code, this may be native PDF/image reading.
+   - In Codex, use available image/PDF inspection tools. For images, inspect the local image path directly when possible; for PDFs, convert pages to image files first if needed.
+   - If the runner cannot inspect the attachment, report the file as an error instead of inventing a transcript.
 2. Apply the user's configured `prompt` from the plan output verbatim as its instruction for that file. The prompt's output is the transcript body.
-3. Pipe the body to `write-transcript.ts`:
+3. Pipe the body to `write-transcript.ts`. Avoid `echo` for generated bodies because transcripts may contain quotes, backslashes, or multiple lines:
 
 ```sh
-echo "<body>" | tsx <skill-dir>/scripts/write-transcript.ts \
-  --vault <vault> --source <source> --target <target> --user-zone <zone>
+cat <<'TRANSCRIPT_BODY' | tsx <skill-dir>/scripts/write-transcript.ts \
+  --vault "<vault>" --source "<source>" --target "<target>" --user-zone "<zone>"
+<body>
+TRANSCRIPT_BODY
 ```
 
 `write-transcript.ts` handles applying the user's `template` and re-attaching the preserved `userZone` above the auto-generated marker.
 
-The sub-agent should return only a short status (success / error message), never the file contents — keep the main agent's context clean.
+Each worker should return only a short status (success / error message), never the file contents. Keep the main agent's context clean.
 
 ### 4. Handle orphans
 

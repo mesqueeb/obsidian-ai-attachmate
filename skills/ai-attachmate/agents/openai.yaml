@@ -1,0 +1,7 @@
+interface:
+  display_name: "AI Attachmate"
+  short_description: "Transcribe Obsidian vault attachments"
+  default_prompt: "Use $ai-attachmate to transcribe the attachments in this Obsidian vault."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,6 +1,6 @@
-# ai-attachmate (Claude Code skill)
+# ai-attachmate (agent skill)
 
-A Claude Code skill that transcribes attachments (PDFs, images, Canvas files) in an Obsidian vault to Markdown — same behavior as the [AI Attachmate Obsidian plugin](https://github.com/mesqueeb/obsidian-ai-attachmate), but using Claude as the AI provider instead of Gemini.
+An agent skill that transcribes attachments (PDFs, images, Canvas files) in an Obsidian vault to Markdown — same behavior as the [AI Attachmate Obsidian plugin](https://github.com/mesqueeb/obsidian-ai-attachmate), but using the current LLM agent's vision/PDF tools instead of Gemini.
 
 The skill reuses the plugin's settings (file filter, prompt, template, transcripts folder), so it produces output indistinguishable from the plugin's.
 
@@ -12,20 +12,30 @@ The skill reuses the plugin's settings (file filter, prompt, template, transcrip
    npm install -g tsx
    ```
 
-2. Copy this folder into your Claude Code skills directory:
+2. Copy this folder into your agent's skills directory.
+
+   For Codex:
 
    ```sh
+   mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+   cp -r skills/ai-attachmate "${CODEX_HOME:-$HOME/.codex}/skills/"
+   ```
+
+   For Claude Code:
+
+   ```sh
+   mkdir -p ~/.claude/skills
    cp -r skills/ai-attachmate ~/.claude/skills/
    ```
 
-3. (Optional) `cd` into an Obsidian vault, then ask Claude Code to transcribe your attachments — the skill auto-activates.
+3. (Optional) `cd` into an Obsidian vault, then ask the agent to transcribe your attachments — the skill auto-activates.
 
 ## How it works
 
 1. Walks up from the current directory to find an Obsidian vault (`.obsidian/`)
 2. Reads the AI Attachmate plugin's settings from `<vault>/.obsidian/plugins/ai-attachmate/data.json`
 3. Runs `plan.ts` to classify every attachment as new / stale / orphan / up-to-date
-4. Fans out sub-agents in parallel batches to transcribe new and stale files (Claude reads PDFs and images natively)
+4. Transcribes new and stale files with the runner's available vision/PDF tools, using parallel workers when available
 5. Preserves any notes you've written above the `<!--auto-generate-content-below-->` marker
 6. Asks before deleting orphaned transcripts (unlike the plugin, which auto-deletes)
 
