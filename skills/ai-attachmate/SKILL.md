@@ -1,6 +1,6 @@
 ---
 name: ai-attachmate
-description: Transcribe PDFs, images, and Canvas files in an Obsidian vault to Markdown using the active agent's vision/PDF tools instead of Gemini. Mirrors AI Attachmate plugin behavior: file filters, prompts, templates, transcript paths, user-zone preservation, and orphan handling. Works in Claude Code, Codex, or another local-file runner. Use when the user wants to bulk-transcribe attachments in an Obsidian vault, mentions "ai-attachmate", "transcribe attachments", "process my vault attachments", or runs this skill from inside an Obsidian vault folder.
+description: Bulk-transcribe PDFs, images, and Canvas files in an Obsidian vault to Markdown using the active agent instead of Gemini. Mirrors the AI Attachmate plugin behavior. Use when the user wants to transcribe attachments in an Obsidian vault, mentions ai-attachmate, or runs this skill from inside a vault folder.
 ---
 
 # AI Attachmate
