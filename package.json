@@ -18,16 +18,16 @@
 	"author": "",
 	"license": "AGPL-3.0",
 	"devDependencies": {
-		"@cycraft/eslint": "^0.4.4",
+		"@cycraft/eslint": "^0.4.6",
 		"@types/micromatch": "^4.0.10",
-		"@types/node": "^20.19.37",
+		"@types/node": "^20.19.43",
 		"builtin-modules": "^3.3.0",
 		"dotenv": "^16.6.1",
-		"esbuild": "^0.27.4",
+		"esbuild": "^0.27.7",
 		"eslint-plugin-obsidianmd": "^0.1.9",
-		"obsidian": "^1.12.3",
+		"obsidian": "^1.13.1",
 		"tslib": "^2.8.1",
-		"vitest": "^3.2.4"
+		"vitest": "^3.2.7"
 	},
 	"dependencies": {
 		"@google/generative-ai": "^0.24.1",
