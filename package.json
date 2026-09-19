@@ -18,7 +18,7 @@
   "author": "",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "@cycraft/eslint": "^0.4.7",
+    "@cycraft/eslint": "^0.4.10",
     "@types/micromatch": "^4.0.10",
     "@types/node": "^20.19.43",
     "builtin-modules": "^3.3.0",
