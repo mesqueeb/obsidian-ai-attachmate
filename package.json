@@ -1,37 +1,37 @@
 {
-  "name": "obsidian-ai-attachmate",
-  "version": "1.2.0",
-  "description": "Transcribes your PDFs, images, and Canvas files into searchable Markdown notes using AI.",
-  "main": "main.js",
-  "type": "module",
-  "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "build": "npm run sync-skill && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "test": "vitest run --watch=false --silent --reporter=verbose",
-    "prettier": "prettier --write \"src/**/*\" \"test/**/*\"",
-    "lint": "eslint \"src/**/*\" \"test/**/*\"",
-    "sync-skill": "node scripts/sync-skill-and-plugin.mjs",
-    "build-and-install": "node scripts/build-and-install.mjs",
-    "release": "node scripts/release.mjs"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "AGPL-3.0",
-  "devDependencies": {
-    "@cycraft/eslint": "^0.4.11",
-    "@types/micromatch": "^4.0.10",
-    "@types/node": "^20.19.43",
-    "builtin-modules": "^3.3.0",
-    "dotenv": "^16.6.1",
-    "esbuild": "^0.27.7",
-    "eslint-plugin-obsidianmd": "^0.1.9",
-    "obsidian": "^1.13.1",
-    "tslib": "^2.8.1",
-    "vitest": "^3.2.7"
-  },
-  "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "micromatch": "^4.0.8",
-    "tesseract.js": "^5.1.1"
-  }
+	"name": "obsidian-ai-attachmate",
+	"version": "1.2.1",
+	"description": "Transcribes your PDFs, images, and Canvas files into searchable Markdown notes using AI.",
+	"main": "main.js",
+	"type": "module",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "npm run sync-skill && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"test": "vitest run --watch=false --silent --reporter=verbose",
+		"prettier": "prettier --write \"src/**/*\" \"test/**/*\"",
+		"lint": "eslint \"src/**/*\" \"test/**/*\"",
+		"sync-skill": "node scripts/sync-skill-and-plugin.mjs",
+		"build-and-install": "node scripts/build-and-install.mjs",
+		"release": "node scripts/release.mjs"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "AGPL-3.0",
+	"devDependencies": {
+		"@cycraft/eslint": "^0.4.11",
+		"@types/micromatch": "^4.0.10",
+		"@types/node": "^20.19.43",
+		"builtin-modules": "^3.3.0",
+		"dotenv": "^16.6.1",
+		"esbuild": "^0.27.7",
+		"eslint-plugin-obsidianmd": "^0.1.9",
+		"obsidian": "^1.13.1",
+		"tslib": "^2.8.1",
+		"vitest": "^3.2.7"
+	},
+	"dependencies": {
+		"@google/generative-ai": "^0.24.1",
+		"micromatch": "^4.0.8",
+		"tesseract.js": "^5.1.1"
+	}
 }
